@@ -34,5 +34,10 @@
   "dependencies": {
     "electronmon": "^2.0.2",
     "howlongtobeat": "^1.8.0"
+  },
+  "electronmon": {
+    "patterns": [
+      "!./test/**"
+    ]
   }
 }

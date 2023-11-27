@@ -48,42 +48,42 @@ const log = () => {
 // 	// console.info('Completionist: ' + obj.gameplayCompletionist + ' hours')
 // }
 
-const findGame = (folder, dir) => {
-	++gamesToScan
-	hltbService.search(folder).then((searchResults) => {
-		const quickSearch = () => {
-			return [searchResults[0].id, searchResults[0].imageUrl, folder]
-		}
+// const findGame = (folder, dir) => {
+// 	++gamesToScan
+// 	hltbService.search(folder).then((searchResults) => {
+// 		const quickSearch = () => {
+// 			return [searchResults[0].id, searchResults[0].imageUrl, folder]
+// 		}
 
-		if (searchResults.length !== 0) {
-			let id = quickSearch()
-			hltbService.detail(id[0]).then((gameDetails) => {
-				foundGames++
-				console.log('[FOUND]\t\t'.green + `${++gamesScanned}. ${folder}`)
-				saveInfo(gameDetails, id[1], dir + id[2] + '/HowLongToBeat-Stats')
-				log()
-			})
+// 		if (searchResults.length !== 0) {
+// 			let id = quickSearch()
+// 			hltbService.detail(id[0]).then((gameDetails) => {
+// 				foundGames++
+// 				console.log('[FOUND]\t\t'.green + `${++gamesScanned}. ${folder}`)
+// 				saveInfo(gameDetails, id[1], dir + id[2] + '/HowLongToBeat-Stats')
+// 				log()
+// 			})
 
-		} else {
-			notFoundGames++
-			console.error('[NOT FOUND]\t'.red + `${++gamesScanned}. ${folder}`)
-			console.error('[INFO]\t\tCheck if the game folder name is spelled correctly\n')
-			log()
-		}
-	})
-}
+// 		} else {
+// 			notFoundGames++
+// 			console.error('[NOT FOUND]\t'.red + `${++gamesScanned}. ${folder}`)
+// 			console.error('[INFO]\t\tCheck if the game folder name is spelled correctly\n')
+// 			log()
+// 		}
+// 	})
+// }
 
 
-const readDirs = (dir) => {
-	let output = fs.readdirSync(dir, { withFileTypes: true })
-	let gameFolders = []
-	output.forEach(element => {
-		if (element.isDirectory()) gameFolders.push(element.name)
-	});
-	for (let folder of gameFolders) {
-		findGame(folder, dir)
-	}
-}
+// const readDirs = (dir) => {
+// 	let output = fs.readdirSync(dir, { withFileTypes: true })
+// 	let gameFolders = []
+// 	output.forEach(element => {
+// 		if (element.isDirectory()) gameFolders.push(element.name)
+// 	});
+// 	for (let folder of gameFolders) {
+// 		findGame(folder, dir)
+// 	}
+// }
 let date = new Date()
 const saveInfo = (info, coverArt, path) => {
 
@@ -134,37 +134,37 @@ const searchOnly = async (folder, dir) => {
 // searchOnly('84851')
 
 
-greeting()
-rl.question(`[1/2]\tPaste the path to the location where all games\n\tare stored:\n\t`, (input) => {
-	let array = input.split(',')
+// greeting()
+// rl.question(`[1/2]\tPaste the path to the location where all games\n\tare stored:\n\t`, (input) => {
+// 	let array = input.split(',')
 
-	rl.question('\n\n[2/2]\tOverwrite old data? (y/n, ' + 'leave empty=n'.italic + '): \n\t', (f) => {
-		if (f == 'y' || f == 'Y') flag = 'force'
-		else flag = null;
+// 	rl.question('\n\n[2/2]\tOverwrite old data? (y/n, ' + 'leave empty=n'.italic + '): \n\t', (f) => {
+// 		if (f == 'y' || f == 'Y') flag = 'force'
+// 		else flag = null;
 
-		console.log(`\n#########################################################\n`)
-		const startOperation = (name) => {
-			readDirs(name)
-			console.log(`[INFO]\t\Looking for games in ${name}\n`)
-		}
+// 		console.log(`\n#########################################################\n`)
+// 		const startOperation = (name) => {
+// 			readDirs(name)
+// 			console.log(`[INFO]\t\Looking for games in ${name}\n`)
+// 		}
 
-		array.forEach((value, index, array) => {
-			value = value.replaceAll(`"`, ``)
-			let lastChar = value[value.length - 1]
-			if (lastChar != `\\`) {
-				value = `${value}\\`
-			}
-			if (!fs.existsSync(value)) {
-				console.log(`\n\n[ERROR]\t${value} doesn't exist!\n`.bgRed);
-				rl.close();
-				return
-			}
-			startOperation(value)
-		})
-	})
-})
+// 		array.forEach((value, index, array) => {
+// 			value = value.replaceAll(`"`, ``)
+// 			let lastChar = value[value.length - 1]
+// 			if (lastChar != `\\`) {
+// 				value = `${value}\\`
+// 			}
+// 			if (!fs.existsSync(value)) {
+// 				console.log(`\n\n[ERROR]\t${value} doesn't exist!\n`.bgRed);
+// 				rl.close();
+// 				return
+// 			}
+// 			startOperation(value)
+// 		})
+// 	})
+// })
 
-rl.on("close", function () {
-	console.log('\n\n#### ' + 'Quitting!'.bold + '\n#### ' + 'Visit https://github.com/lscambo13/HLTB_Fetcher\n'.bold);
-	process.exit(0);
-});
+// rl.on("close", function () {
+// 	console.log('\n\n#### ' + 'Quitting!'.bold + '\n#### ' + 'Visit https://github.com/lscambo13/HLTB_Fetcher\n'.bold);
+// 	process.exit(0);
+// });

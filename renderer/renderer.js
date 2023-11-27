@@ -1,15 +1,21 @@
 
-const button = document.querySelector('#openButton')
+const openButton = document.querySelector('#openButton')
+const clearButton = document.querySelector('#clearButton')
+
+const textArea = document.querySelector('#logArea')
 const select = document.querySelector('#select')
 
-button.addEventListener('click', (args) => {
-    bridgeApi.send('chann', { 'key': 'data' })
-    // window.postMessage({
-    //     type: 'channelType'
-    // })
-
+clearButton.addEventListener('click', () => {
+    textArea.textContent = ''
 })
 
-bridgeApi.on('received', (...args) => {
-    console.log(...args)
+openButton.addEventListener('click', async (args) => {
+    res = await bridgeApi.invoke('openRequest', 'selectDrive')
+    // textArea.textContent = textArea.textContent + res + '\n'
+})
+
+bridgeApi.on('LOG', (...args) => {
+    textArea.textContent = textArea.textContent + args + '\n'
+    textArea.scrollTop = textArea.scrollHeight
+    // console.log(args)
 })
