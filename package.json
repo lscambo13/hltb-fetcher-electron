@@ -1,0 +1,38 @@
+{
+  "name": "hltb-fetcher-electron",
+  "productName": "HLTB Fetcher",
+  "version": "1.0.0",
+  "description": "A GUI wrapper to pull stats from HowLongToBeat offline to your game folders all at once.",
+  "main": "main.js",
+  "scripts": {
+    "start": "npx electronmon .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lscambo13/hltb-fetcher-electron.git"
+  },
+  "keywords": [
+    "lscambo13",
+    "hltb",
+    "howlongtobeat",
+    "stats",
+    "gaming",
+    "pc",
+    "mediacenterpc",
+    "htpc"
+  ],
+  "author": "lscambo13",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lscambo13/hltb-fetcher-electron/issues"
+  },
+  "homepage": "https://github.com/lscambo13/hltb-fetcher-electron#readme",
+  "devDependencies": {
+    "electron": "^27.1.2"
+  },
+  "dependencies": {
+    "electronmon": "^2.0.2",
+    "howlongtobeat": "^1.8.0"
+  }
+}
