@@ -14,10 +14,20 @@
 <body>
   <h1>HowLongToBeat Stats Fetcher!</h1>
   <!-- <h3 id="subtitle">Select Game Drive</h3> -->
-  <textarea name="logArea" id="logArea" cols="30" rows="10" readonly></textarea>
-  <button id="openButton">Select Game Drive</button>
-  <button id="clearButton">Clear Log</button>
-
+  <div id="mainContent">
+    <div id="mainContentColumnOne">
+      <p><label for="logArea">Folders to Scan:</label></p>
+      <p><textarea name="logArea" id="logArea" cols="30" rows="10" readonly></textarea></p>
+      <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p>
+    </div>
+    <div id="mainContentColumnTwo">
+      <p><label for="previewArea">Games to Scan:</label></p>
+      <p><textarea name="previewArea" id="previewArea" cols="30" rows="10" readonly></textarea></p>
+    </div>
+  </div>
+  <div id="buttonsBar"><div>  <button id="addButton">Add Game Drive</button>
+  <button id="clearButton">Reset</button></div>
+  <button id="startButton" disabled="true">Start</button></div>
 </body>
 <script src="./renderer.js"></script>
 

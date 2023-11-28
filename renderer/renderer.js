@@ -1,21 +1,60 @@
 
-const openButton = document.querySelector('#openButton')
+const addButton = document.querySelector('#addButton')
+const startButton = document.querySelector('#startButton')
 const clearButton = document.querySelector('#clearButton')
 
-const textArea = document.querySelector('#logArea')
+const logArea = document.querySelector('#logArea')
+const previewArea = document.querySelector('#previewArea')
+
 const select = document.querySelector('#select')
 
 clearButton.addEventListener('click', () => {
-    textArea.textContent = ''
+    bridgeApi.invoke('openRequest', 'resetQueue')
+    logArea.textContent = ''
+    previewArea.textContent = ''
+    startButton.disabled = true
 })
 
-openButton.addEventListener('click', async (args) => {
-    res = await bridgeApi.invoke('openRequest', 'selectDrive')
-    // textArea.textContent = textArea.textContent + res + '\n'
+addButton.addEventListener('click', async (...args) => {
+    bridgeApi.invoke('openRequest', 'selectDrive')
+        .then((res) => {
+            if (res != undefined) logPrint(res)
+        })
 })
 
-bridgeApi.on('LOG', (...args) => {
-    textArea.textContent = textArea.textContent + args + '\n'
-    textArea.scrollTop = textArea.scrollHeight
-    // console.log(args)
+startButton.addEventListener('click', async (...args) => {
+    res = await bridgeApi.invoke('openRequest', 'startOperation')
 })
+
+bridgeApi.on('LOG', (args) => logPrint(args))
+bridgeApi.on('PREVIEW', (args) => previewPrint(args))
+bridgeApi.on('DOM', (args) => affectDOM(args))
+
+const affectDOM = (args) => {
+    if (args == 'enableStartButton') {
+        startButton.disabled = false
+    }
+    if (args == 'clearBothLogBoxes') {
+        logArea.textContent = ''
+        previewArea.textContent = ''
+    }
+    if (args == 'clearLog') {
+        logArea.textContent = ''
+    }
+    if (args == 'clearPreview') {
+        previewArea.textContent = ''
+    }
+}
+
+
+const logPrint = (args) => {
+    logArea.textContent = logArea.textContent + args + '\n'
+    logArea.scrollTop = logArea.scrollHeight
+}
+
+const previewPrint = (args) => {
+    previewArea.textContent = previewArea.textContent + args + '\n'
+    previewArea.scrollTop = previewArea.scrollHeight
+}
+
+

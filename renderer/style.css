@@ -1,4 +1,44 @@
-#logArea {
+:root {
+  color-scheme: dark;
+  padding: 12px;
+  box-sizing: border-box;
+  cursor: default;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+textarea{
+    border-radius: 10px;
+    resize: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 16px;
+}
+
+#mainContent {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
     width: 750px;
-    height: 350px;
+    height: max-content;
+}
+
+#logArea {
+    width: 400px;
+    height: 230px;
+}
+
+#previewArea {
+    width: 300px;
+    height: 280px;
+}
+
+button{
+    width: 120px;
+    height: 40px;
+}
+
+#buttonsBar{
+    width: 740px;
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
 }

@@ -7,11 +7,10 @@ const hltbService = new hltb.HowLongToBeatService()
 
 const { ipcRenderer } = require('electron/renderer')
 
-// process.env.NODE_ENV = 'development'
+process.env.NODE_ENV = 'production'
 
 const isDev = process.env.NODE_ENV === 'development'
 let mainWin;
-let workDirs = [];
 let flag = 'force';
 let gamesScanned = 0
 let gamesToScan = 0
@@ -20,8 +19,8 @@ let notFoundGames = 0
 
 const createMainWindow = () => {
     mainWin = new BrowserWindow({
-        width: isDev ? 1000 : 800,
-        height: 600,
+        width: isDev ? 1200 : 850,
+        height: 680,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -29,6 +28,8 @@ const createMainWindow = () => {
             contextIsolation: true,
             sandbox: true
         },
+        transparent: true,
+        backgroundMaterial: 'mica',
     })
     mainWin.loadFile(path.join(__dirname, 'renderer/index.html'))
     if (isDev) mainWin.webContents.openDevTools()
@@ -43,8 +44,8 @@ app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit()
 })
 
-function sendMsg(msg) {
-    mainWin.webContents.send('LOG', msg)
+function sendMsg(msg, channel = 'LOG') {
+    mainWin.webContents.send(channel, msg)
 }
 
 // #####################################
@@ -52,12 +53,12 @@ function sendMsg(msg) {
 const log = () => {
     if (gamesScanned == gamesToScan) {
         sendMsg(`\n`)
-        sendMsg(`\n# # # # # # # # # #   R E S U L T S   # # # # # # # # # #\n`)
-        sendMsg(`\t\tTotal Games Scanned: ${gamesToScan}`)
-        sendMsg(`\t\tSuccess: ${foundGames}`)
-        sendMsg(`\t\tCould Not Find: ${notFoundGames}`)
-        sendMsg(`\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n`)
-        sendMsg('   ' + 'Quitting!' + '\n   ' + 'Visit https://github.com/lscambo13/HLTB_Fetcher\n');
+        sendMsg(`# # # #   R E S U L T S   # # # #\n`)
+        sendMsg(`Total Games Scanned: ${gamesToScan}`)
+        sendMsg(`Success: ${foundGames}`)
+        sendMsg(`Could Not Find: ${notFoundGames}`)
+        sendMsg(`# # # # # # # # # # # # # # # # #\n`)
+        sendMsg('Quitting!' + '\n' + 'https://github.com/lscambo13/HLTB_Fetcher\n');
         // process.exit(0);
 
         gamesScanned = 0
@@ -71,19 +72,20 @@ let date = new Date()
 const saveInfo = (info, coverArt, address) => {
 
     if (fs.existsSync(address) && flag == null) {
-        sendMsg('[EXISTS]\t' + info.name)
-        sendMsg('[INFO]\t\tEnable overwrite mode to force refresh' + '\n')
+        sendMsg('SKIP: ' + info.name + ' - Enable overwrite mode to force refresh')
+        // sendMsg('[INFO]\t\tEnable overwrite mode to force refresh')
         return
     };
 
 
     if (fs.existsSync(address)) {
-        sendMsg('[UPDATING]\t' + info.name + '\n')
+        sendMsg('UPDATE: ' + info.name)
         fs.rmSync(address, { recursive: true })
         fs.mkdirSync(address)
     }
     if (!fs.existsSync(address)) {
-        sendMsg('[FETCHING]\t' + info.name + '\n')
+        sendMsg('UPDATE: ' + info.name)
+        // sendMsg('[FETCHING]\t' + info.name)
         fs.mkdirSync(address)
     }
 
@@ -121,67 +123,98 @@ const findGame = (folder, dir) => {
             let id = quickSearch()
             hltbService.detail(id[0]).then((gameDetails) => {
                 foundGames++
-                sendMsg('[FOUND]\t\t' + `${++gamesScanned}. ${folder}`)
+                ++gamesScanned
+                // sendMsg('FOUND: ' + `${gamesScanned}. ${folder}`)
                 saveInfo(gameDetails, id[1], path.join(dir, id[2], '/HowLongToBeat-Stats'))
                 log()
             })
 
         } else {
             notFoundGames++
-            sendMsg('[NOT FOUND]\t' + `${++gamesScanned}. ${folder}`)
-            sendMsg('[INFO]\t\tCheck if the game folder name is spelled correctly\n')
+            ++gamesScanned
+            sendMsg(`ERROR: ${folder} - Check if the game folder name is spelled correctly`)
+            // sendMsg('[INFO]\t\tCheck if the game folder name is spelled correctly')
             log()
         }
     })
 }
 
-const readDirs = (dir) => {
-    let output = fs.readdirSync(dir, { withFileTypes: true })
-    let gameFolders = []
-    output.forEach(element => {
-        if (element.isDirectory()) gameFolders.push(element.name)
-    });
-    for (let folder of gameFolders) {
-        sendMsg(`LOG: ` + path.join(dir, folder))
-        findGame(folder, dir)
-    }
+let gamePaths = []
+let gameFolders = []
+const startOnlineScan = () => {
+    gameFolders.forEach((val, index, array) => {
+        findGame(val, gamePaths[index])
+    })
 }
 
-function readDrive(drivePathArray) {
-    // new Array
-    // let array = drivePathArray.split(',')
-    let array = drivePathArray
-    const startOperation = (name) => {
-        readDirs(name)
-        sendMsg(`[INFO]\t\Looking for games in ${name}\n`)
+const readDirs = (dir) => {
+    let output = fs.readdirSync(dir, { withFileTypes: true })
+    const ignored = (string) => {
+        let ignoredDirs = ['hjkdfjkhjhk', 'ig me', '$RECYCLE.BIN', 'System Volume Information', 'msdownld.tmp', '$Trash$'];
+        for (let val of ignoredDirs) {
+            if (string.includes(val)) return true
+        }
+        return false
     }
 
-    array.forEach((value, index, array) => {
-        // value = value.replaceAll(`"`, ``)
-        // let lastChar = value[value.length - 1]
-        // if (lastChar != `\\`) {
-        //     value = `${value}\\`
-        // }
+    output.forEach(element => {
+        if (element.isDirectory() && !ignored(element.name)) {
+            gamePaths.push(element.path)
+            gameFolders.push(element.name)
+        }
+    });
+    gameFolders.forEach((val, index, array) => {
+        sendMsg(`SCAN: ${++index}. ${val}`, 'PREVIEW')
+    })
+}
+
+let driveQueueArray = [];
+const readQueue = () => {
+    sendMsg('clearLog', 'DOM')
+    driveQueueArray.forEach((value, index, array) => {
         if (!fs.existsSync(value)) {
-            sendMsg(`\n\n[ERROR]\t${value} doesn't exist!\n`);
-            // rl.close();
+            sendMsg(`ERROR: "${value}" doesn't exist!`);
             return
         }
-        startOperation(value)
+        sendMsg(`INFO: ${++index}. Add to queue - ${value}`)
+        sendMsg('clearPreview', 'DOM')
+        readDirs(value)
     })
+
+}
+
+const queueDrives = (pathToDrive) => {
+    driveQueueArray.push(pathToDrive)
+    sendMsg('enableStartButton', 'DOM')
+}
+
+const resetQueues = () => {
+    driveQueueArray = []
+    gamePaths = []
+    gameFolders = []
 }
 
 ipcMain.handle('openRequest', (event, ...args) => {
-    // console.log(args)
-    dialog.showOpenDialog(mainWin, {
-        properties: ['openDirectory', 'multiSelections']
-    }).then(result => {
-        sendMsg(`LOG: cancelled dialog = ` + result.canceled)
-        sendMsg(`LOG: picked = ` + result.filePaths)
-        if (!result.canceled) readDrive(result.filePaths)
-    }).catch(err => {
-        sendMsg(`ERROR: ` + err)
-    })
-    sendMsg(`LOG: open dialog = ` + args)
-    // return 'ok good'
+    let out;
+    if (args == 'selectDrive') {
+        out = new Promise((resolve, reject) => {
+            dialog.showOpenDialog(mainWin, {
+                properties: ['openDirectory']
+            }).then(result => {
+                if (result.canceled) {
+                    resolve(`LOG: Cancelled by user`)
+                }
+                if (!result.canceled) {
+                    queueDrives(result.filePaths[0])
+                    readQueue()
+                    resolve()
+                }
+            }).catch(err => {
+                reject(`ERROR: ${err}`)
+            })
+        });
+    }
+    if (args == 'startOperation') startOnlineScan()
+    if (args == 'resetQueue') resetQueues()
+    return out
 })
