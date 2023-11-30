@@ -6,6 +6,11 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+body{
+      -webkit-user-select: none;
+      /* -webkit-app-region: drag; */
+}
+
 textarea{
     border-radius: 10px;
     resize: none;
