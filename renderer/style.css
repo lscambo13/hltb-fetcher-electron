@@ -7,15 +7,15 @@
 }
 
 body{
-      -webkit-user-select: none;
-      /* -webkit-app-region: drag; */
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    -webkit-user-select: none;
+    gap: 10px;
 }
 
-textarea{
-    border-radius: 10px;
-    resize: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 16px;
+label{
+    font-size: medium;
 }
 
 #mainContent {
@@ -26,24 +26,107 @@ textarea{
     height: max-content;
 }
 
-#logArea {
-    width: 400px;
-    height: 230px;
+#driveViewArea {
+    width: 500px;
+    height: 400px;
 }
 
-#previewArea {
-    width: 300px;
-    height: 280px;
+.contentBoxInner {
+    overflow-y: auto;
+    /* overflow-x: hidden; */
+    resize: none;
+    /* border-radius: 5px 0 0 5px; */
+    /* background-color: rgb(43, 43, 43); */
+}
+.contentBoxOuter{
+    /* padding: 10px;
+    border-radius: 10px; */
+    /* background-color: rgb(43, 43, 43); */
 }
 
-button{
-    width: 120px;
+#folderViewArea {
+width: 500px;
+height: 400px;
+}
+
+.folderItem{
+
+}
+.folderButtons{
+    display: flex;
+    align-items: center;
+    gap: 10px;
     height: 40px;
 }
 
-#buttonsBar{
-    width: 740px;
+button{
+    background-color: rgb(53, 53, 53);
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(69, 69, 69);
+    text-decoration: none;
+}
+button:hover{
+    background-color: rgb(60, 61, 56);
+}
+
+.bigButton{
+    min-width: 140px;
+    height: 36px;
+    padding: 0;
+    text-align: center;
+    margin: auto;
+    border-radius: 5px;
+}
+
+#startButton{
+    color: black;
+    background-color: rgb(75, 185, 240);
+}
+#startButton:hover{
+    background-color: rgb(72, 178, 233);
+}
+#startButton:disabled{
+    background-color: rgb(23, 57, 74);
+}
+
+.listTitle{
+        white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.listItem{
     display: flex;
-    flex: 1;
+    height: 50px;
     justify-content: space-between;
+    margin-block-end: 4px;
+    margin-inline-end: 8px;
+    padding-inline: 14px;
+    gap: 10px;
+    border: 1px solid rgb(31, 31, 31);
+    align-items: center;
+    border-radius: 4px;
+    background-color: rgb(43, 43, 43);
+}
+
+.listItem:hover{
+    background-color: rgb(50, 50, 50);
+    border: 1px solid rgb(50, 50, 50);
+}
+
+.listTitle::before{
+    content: XX;
+}
+
+.listButton{
+    width: 25px;
+    height: 25px;
+    border-radius: 25%;
+}
+
+
+#buttonsBar{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }

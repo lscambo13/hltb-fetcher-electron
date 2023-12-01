@@ -22,6 +22,9 @@ class gameObject {
             this.coverUrl = url
     }
 }
+let gameCovers = []
+let fullGamePaths = []
+
 let allGames = []
 
 let failedGames = []
@@ -29,11 +32,17 @@ let failedGameDirs = []
 let passedGames = []
 let passedGameDir = []
 
+const resetQueues = () => {
+    driveQueueArray = []
+    gamePaths = []
+    gameFolders = []
+}
+
 
 const createMainWindow = () => {
     mainWin = new BrowserWindow({
-        width: isDev ? 1200 : 850,
-        height: 680,
+        width: isDev ? 1440 : 1280,
+        height: 720,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: false,
@@ -41,8 +50,8 @@ const createMainWindow = () => {
             contextIsolation: true,
             sandbox: true
         },
-        // transparent: true,
-        // backgroundMaterial: 'mica',
+        transparent: true,
+        backgroundMaterial: 'mica',
         autoHideMenuBar: true,
 
     })
@@ -79,7 +88,7 @@ const giveMeTime = () => {
 const logToDisk = () => {
 
     allGames.forEach((val, index) => {
-        console.log(val)
+        // console.log(val)
     })
 
     let saveDir = path.join(process.env.HOME, `HLTB_Fetcher/`)
@@ -92,27 +101,27 @@ const logToDisk = () => {
 }
 
 const log = () => {
-    if (gamesScanned == totalGamesToScan) {
-        sendMsg(`\n`)
-        sendMsg(`# # # #   R E S U L T S   # # # #\n`)
-        sendMsg(`Total Games Scanned: ${totalGamesToScan}`)
-        sendMsg(`Success: ${counterGamesFound}`)
-        sendMsg(`Could Not Find: ${counterGamesNotFound}`)
-        sendMsg(`# # # # # # # # # # # # # # # # #\n`)
-        sendMsg('Quitting!' + '\n' + 'https://github.com/lscambo13/HLTB_Fetcher\n');
-        // process.exit(0);
 
-        failedGames.forEach((val, index) => {
-            console.log(`FAILED ${val} - ${failedGameDirs[index]}`)
-        })
+    let logDiag = dialog.showMessageBox(mainWin, { message: 'OK' })
+    logDiag.then((res) => console.log(res, res.response))
 
-        logToDisk()
+    sendMsg(`\n`)
+    sendMsg(`# # # #   R E S U L T S   # # # #\n`)
+    sendMsg(`Total Games Scanned: ${gameFolders.length}`)
+    sendMsg(`Success: ${fullGamePaths.length}`)
+    sendMsg(`Could Not Find: ${failedGames.length}\n`)
+    sendMsg(`# # # # # # # # # # # # # # # # #\n`)
+    sendMsg('Quitting!' + '\n' + 'https://github.com/lscambo13/HLTB_Fetcher\n');
 
-        gamesScanned = 0
-        totalGamesToScan = 0
-        counterGamesFound = 0
-        counterGamesNotFound = 0
-    }
+    logToDisk()
+
+    gamesScanned = 0
+    totalGamesToScan = 0
+    counterGamesFound = 0
+    counterGamesNotFound = 0
+    sendMsg('disableStartButton', 'DOM')
+    sendMsg('disableAddButton', 'DOM')
+
 }
 
 let date = new Date()
@@ -161,54 +170,63 @@ const saveInfo = (info, coverArt, address) => {
     fs.writeFileSync(path.join(address, `/Completionist - ${info.gameplayCompletionist} hours - ${safeName}.txt`), lineOne + lineTwo + lineThree + lineFour)
 }
 
+let searchPromises = []
+const getGameDetail = () => {
 
-const findGame = async (folder, dir) => {
-    ++totalGamesToScan
-
-    hltbService.search(folder).then((searchResults) => {
-        if (searchResults.length !== 0) {
-            // let id = quickSearch()
-            hltbService.detail(searchResults[0].id).then((gameDetails) => {
-                // console.log(gameDetails)
-                counterGamesFound++
-                ++gamesScanned
-                passedGames.push(folder)
-                passedGameDir.push(dir)
-                // sendMsg('FOUND: ' + `${gamesScanned}. ${folder}`)
-                saveInfo(gameDetails, searchResults[0].imageUrl, path.join(dir, folder, '/HowLongToBeat-Stats'))
-                log()
-            }).catch((err2) => console.log(`DETAIL ERROR: ${err2}`))
-
-        } else {
-            counterGamesNotFound++
+    Promise.all(searchPromises).then((gameDetails) => {
+        // console.log(`all promises fulfilled`)
+        gameDetails.forEach((val, index, array) => {
+            // sendMsg(`LOG: ${val.name}`, 'LOG')
+            counterGamesFound++
             ++gamesScanned
-            failedGames.push(folder)
-            failedGameDirs.push(dir)
-            sendMsg(`ERROR: ${folder} - Check if the game folder name is spelled correctly`)
-            // sendMsg('[INFO]\t\tCheck if the game folder name is spelled correctly')
-            log()
-        }
-    }).catch((err1) => console.log(`SEARCH ERROR: ${err1}`))
-    // const quickSearch = () => {
-    //     return [searchResults[0].id, searchResults[0].imageUrl, folder]
-    // }
-
-
-
+            // passedGames.push(folder)
+            // passedGameDir.push(dir)
+            saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'))
+        })
+        failedGames.forEach((val, index, array) => {
+            sendMsg(`ERROR: ${val} - Check if the game folder name is spelled correctly`, 'LOG')
+        })
+        log()
+    }).catch((error) => console.log(`resolve promises error`, error))
 }
 
 let gamePaths = []
 let gameFolders = []
 const startOnlineScan = () => {
     gameFolders.forEach((val, index, array) => {
-        findGame(val, gamePaths[index])
+        // ++gamesScanned
+        searchPromises.push(hltbService.search(val))
+        // findGame(val, gamePaths[index])
     })
+
+    Promise.all(searchPromises).then((searchResults) => {
+        searchPromises = []
+        searchResults.forEach((val, index, array) => {
+            if (val.length !== 0) {
+                // console.log(val[0].name)
+                searchPromises.push(hltbService.detail(val[0].id))
+                gameCovers.push(val[0].imageUrl)
+                fullGamePaths.push(path.join(gamePaths[index], gameFolders[index]))
+            } else {
+                // console.log(gameFolders[index])
+                counterGamesNotFound++
+                ++gamesScanned
+                failedGames.push(gameFolders[index])
+                failedGameDirs.push(gamePaths[index])
+                // sendMsg('[INFO]\t\tCheck if the game folder name is spelled correctly')
+                // log()
+            }
+        })
+        getGameDetail()
+    }).catch((error) => console.log(`resolve promises error`, error))
+
 }
 
 const readDirs = (dir) => {
     //
     // reset folder arrays and Call readdir again in case folder has ben renamed!
     // 
+
     let output = fs.readdirSync(dir, { withFileTypes: true })
     const ignored = (string) => {
         // 'hjkdfjkhjhk', 'ig me', 
@@ -226,20 +244,25 @@ const readDirs = (dir) => {
         }
     });
     gameFolders.forEach((val, index, array) => {
-        sendMsg(`SCAN: ${++index}. ${val}`, 'PREVIEW')
+        sendMsg(val, 'PREVIEW')
+        sendMsg(`SCAN: ${++index}. ${val}`, 'LOG')
+        // ++totalGamesToScan
     })
 }
 
 let driveQueueArray = [];
 const readQueue = () => {
-    sendMsg('clearLog', 'DOM')
+    // sendMsg('clearLog', 'DOM')
+    gamePaths = []
+    gameFolders = []
     driveQueueArray.forEach((value, index, array) => {
         if (!fs.existsSync(value)) {
             sendMsg(`ERROR: "${value}" doesn't exist!`);
             return
         }
-        sendMsg(`INFO: ${++index}. Add to queue - ${value}`)
-        sendMsg('clearPreview', 'DOM')
+        sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
+        sendMsg(value, 'QUEUE_DRIVE')
+        // sendMsg('clearPreview', 'DOM')
         readDirs(value)
     })
 
@@ -248,12 +271,6 @@ const readQueue = () => {
 const queueDrives = (pathToDrive) => {
     driveQueueArray.push(pathToDrive)
     sendMsg('enableStartButton', 'DOM')
-}
-
-const resetQueues = () => {
-    driveQueueArray = []
-    gamePaths = []
-    gameFolders = []
 }
 
 ipcMain.handle('openRequest', (event, ...args) => {

@@ -16,18 +16,39 @@
   <!-- <h3 id="subtitle">Select Game Drive</h3> -->
   <div id="mainContent">
     <div id="mainContentColumnOne">
-      <p><label for="logArea">Folders to Scan:</label></p>
-      <p><textarea name="logArea" id="logArea" cols="30" rows="10" readonly></textarea></p>
-      <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p>
+      <p><label for="driveViewArea">Folders to Scan:</label></p>
+      <div class="contentBoxOuter">
+        <div class="contentBoxInner" id="driveViewArea">
+          <div class="listItem driveItem">
+              <span class="listTitle">Select Game Drive</span>         
+            <div class="driveButtons">
+            <button class="listButton">A</button>
+          </div>
+        </div>
+      </div>
+      </div>
+      <!-- <p><textarea name="logArea" id="logArea" cols="30" rows="10" readonly></textarea></p> -->
+      <!-- <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p> -->
     </div>
     <div id="mainContentColumnTwo">
-      <p><label for="previewArea">Games to Scan:</label></p>
-      <p><textarea name="previewArea" id="previewArea" cols="30" rows="10" readonly></textarea></p>
+      <p><label for="folderViewArea">Games to Scan:</label></p>
+        <!-- <textarea name="previewArea" id="previewArea" cols="30" rows="10" readonly></textarea> -->
+        <div class="contentBoxOuter">
+          <div class="contentBoxInner" name="folderViewArea" id="folderViewArea">
+            <div class="listItem folderItem">
+              <span class="listTitle">Game Folder Preview</span>         
+              <div class="folderButtons">
+             <button class="listButton">A</button>
+            <button class="listButton">B</button>
+            </div></div>
+
+        </div>
+      </div>
     </div>
   </div>
-  <div id="buttonsBar"><div>  <button id="addButton">Add Game Drive</button>
-  <button id="clearButton">Reset</button></div>
-  <button id="startButton" disabled="true">Start</button></div>
+  <div id="buttonsBar"> <div><button class="bigButton" id="addButton">Add Game Drive</button>
+  <button class="bigButton" id="clearButton">Reset</button></div>
+  <button class="bigButton" id="startButton" disabled="true">Start</button></div>
 </body>
 <script src="./renderer.js"></script>
 
