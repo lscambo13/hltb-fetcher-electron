@@ -198,9 +198,19 @@ button{
     text-decoration: none;
     text-align: center;
     vertical-align: middle;
+    transition: 75ms;
+    opacity: 1;
 }
 button:hover{
     background-color: rgb(60, 61, 56);
+}
+
+button:active{
+    opacity: 0.75;
+}
+
+button:disabled{
+    opacity: 1;
 }
 
 .bigButton{
