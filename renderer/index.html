@@ -1,55 +1,102 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="UTF-8" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="style.css">
-  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
-  <title>HowLongToBeat Stats Fetcher</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self'; style-src-elem 'self' https://fonts.googleapis.com ; font-src 'self' https://fonts.gstatic.com; script-src 'self'  https://ajax.googleapis.com " />
+    <meta http-equiv="X-Content-Security-Policy"
+          content="default-src 'self'; style-src-elem 'self'https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'  https://ajax.googleapis.com " />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <!-- <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
+    <title>HowLongToBeat Stats Fetcher</title>
+  </head>
 
-<body>
-  <h1>HowLongToBeat Stats Fetcher!</h1>
-  <!-- <h3 id="subtitle">Select Game Drive</h3> -->
-  <div id="mainContent">
-    <div id="mainContentColumnOne">
-      <p><label for="driveViewArea">Folders to Scan:</label></p>
-      <div class="contentBoxOuter">
-        <div class="contentBoxInner" id="driveViewArea">
-          <div class="listItem driveItem">
-              <span class="listTitle">Select Game Drive</span>         
-            <div class="driveButtons">
-            <button class="listButton">A</button>
+  <body>
+    <h1>HowLongToBeat Stats Fetcher!</h1>
+    <!-- <h3 id="subtitle">Select Game Drive</h3> -->
+
+    <div id="buttonsBar">
+      <div>
+        <button class="bigButton" id="addButton">
+          <span class="material-symbols-rounded-button">add</span>
+          Add Game Drive</button>
+        <button class="bigButton" id="clearButton">
+          <span class="material-symbols-rounded-button">clear_all</span>
+          Clear Queue</button>
+      </div>
+      <div>
+        <button class="bigButton" id="startButton" disabled="true">
+          <span class="material-symbols-rounded-button">play_arrow</span>
+          Start</button>
+      </div>
+    </div>
+
+    <div id="mainContent" class="displayNone">
+      <div id="mainContentColumnOne">
+        <label for="driveViewArea">Folders to Scan</label>
+        <div class="contentBoxOuter">
+          <div class="contentBoxInner" id="driveViewArea">
+            <div class="listItem driveItem">
+              <span class="listTitle driveTitleBox">
+                <span class="material-symbols-rounded-large">folder_open</span>
+                <span>
+                  <div class="listTitleLarge">kjguji dsggggggggggggggggggggggggggggggggggggggg</div>
+                  <div class="listTitleSmall">D:\projects\hltb-fetcher-electron\test</div>
+                </span>
+              </span>
+              <div class="driveButtons">
+                <button class="listButton">
+                  <span class="material-symbols-rounded-tiny">remove</span>
+                </button>
+              </div>
+            </div>
+            <div id="addButtonLarge" class="listItem">
+              <span class="listTitle">
+                <span class="material-symbols-rounded-large">add</span>
+                Add Game Drive</span>
+              <!-- <div class="driveButtons">
+                <button class="listButton">
+                  <span class="material-symbols-rounded-tiny">remove</span>
+                </button>
+              </div> -->
+            </div>
           </div>
         </div>
+        <!-- <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p> -->
       </div>
-      </div>
-      <!-- <p><textarea name="logArea" id="logArea" cols="30" rows="10" readonly></textarea></p> -->
-      <!-- <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p> -->
-    </div>
-    <div id="mainContentColumnTwo">
-      <p><label for="folderViewArea">Games to Scan:</label></p>
-        <!-- <textarea name="previewArea" id="previewArea" cols="30" rows="10" readonly></textarea> -->
+      <div id="mainContentColumnTwo" class="">
+        <label for="folderViewArea">Subfolders detected</label>
         <div class="contentBoxOuter">
           <div class="contentBoxInner" name="folderViewArea" id="folderViewArea">
             <div class="listItem folderItem">
-              <span class="listTitle">Game Folder Preview</span>         
+              <span class="listTitle folderTitleBox">
+                <span class="material-symbols-rounded-large">subdirectory_arrow_right</span>
+                <span>
+                  <div class="listTitleLarge">game folder preview</div>
+                  <div class="listTitleSmall">D:\projects\hltb-fetcher-electron\test</div>
+                </span>
+              </span>
               <div class="folderButtons">
-             <button class="listButton">A</button>
-            <button class="listButton">B</button>
-            </div></div>
-
+                <button class="listButton showOnHover">
+                  <span class="material-symbols-rounded-tiny">bookmark_manager</span>
+                </button>
+                <button class="listButton folderPassed displayNone">
+                  <span class="material-symbols-rounded-tiny">check</span>
+                </button>
+                <button class="listButton folderFailed displayNone">
+                  <span class="material-symbols-rounded-tiny">close</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div id="buttonsBar"> <div><button class="bigButton" id="addButton">Add Game Drive</button>
-  <button class="bigButton" id="clearButton">Reset</button></div>
-  <button class="bigButton" id="startButton" disabled="true">Start</button></div>
-</body>
-<script src="./renderer.js"></script>
+
+  </body>
+  <script src="./renderer.js"></script>
 
 </html>

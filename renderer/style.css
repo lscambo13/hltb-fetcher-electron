@@ -1,9 +1,19 @@
+@font-face {
+  font-family: 'Material Symbols Rounded';
+  font-style: normal;
+  src: url(./assets/material_font_rounded.woff2) format('woff');
+}
+
+*{
+  /* outline: red solid 1px; */
+  scroll-behavior: smooth;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 :root {
   color-scheme: dark;
-  padding: 12px;
+  padding: 20px;
   box-sizing: border-box;
   cursor: default;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body{
@@ -11,28 +21,152 @@ body{
     flex-direction: column;
     user-select: none;
     -webkit-user-select: none;
-    gap: 10px;
+    /* gap: 100px; */
+}
+
+
+.material-symbols-rounded-large {
+  font-family: 'Material Symbols Rounded';
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 200,
+  'GRAD' 0,
+  'opsz' 28;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 28px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  /* margin-top: 6px; */
+  /* margin-inline-start: -2px; */
+  /* /* padding-bottom: 8px; */
+  padding-inline-end: 14px;
+  direction: ltr;
+}
+
+.material-symbols-rounded-button {
+  font-family: 'Material Symbols Rounded';
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 200,
+  'GRAD' 0,
+  'opsz' 24;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+    margin-top: -3px;
+  margin-inline-start: -2px;
+  /* /* padding-bottom: 8px; */
+  padding-inline-end: 0px;
+  direction: ltr;
+}
+
+.material-symbols-rounded-tiny {
+  font-family: 'Material Symbols Rounded';
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 16;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 16px;  /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  margin-top: -4px;
+  margin-inline-start: -2px;
+  /* padding-inline-end: 16px; */
+  direction: ltr;
+}
+
+.folderFailed{
+    background-color: rgba(255, 110, 110, 0.425);
+}
+
+.folderPassed{
+    background-color: rgba(132, 255, 110, 0.425);
+}
+
+.showOnHover{
+    opacity: 0;
+    scale: 0.95;
+    transition: 100ms;
+}
+
+.folderItem:hover > .folderButtons > .showOnHover{
+    opacity: 1;
+    scale: 1;
+}
+
+span{
+    /* display: inline-block; */
+    vertical-align: middle;
+    text-align: center;
+    /* margin-top: 4px; */
+    margin: 0;
+    padding: 0;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-corner {
+    background: rgba(0,0,0,0);
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba(204, 204, 204, 0.25);
+    border-radius: 6px;
+    border: 4px solid rgba(0,0,0,0);
+    background-clip: content-box;
+    min-width: 12px;
+    min-height: 60px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(204, 204, 204, 0.5);
+}
+::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 6px;
+}
+::-webkit-scrollbar-track:active {
+    background-color: rgba(0, 0, 0, 0.25);
 }
 
 label{
     font-size: medium;
+    line-height: 40px;
 }
 
 #mainContent {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px;
-    width: 750px;
+    /* width: 750px; */
     height: max-content;
+    margin-block-end: 40px;
 }
 
 #driveViewArea {
-    width: 500px;
+    /* width: 500px; */
     height: 400px;
 }
 
 .contentBoxInner {
-    overflow-y: auto;
+    overflow-y: scroll;
     /* overflow-x: hidden; */
     resize: none;
     /* border-radius: 5px 0 0 5px; */
@@ -45,13 +179,10 @@ label{
 }
 
 #folderViewArea {
-width: 500px;
+/* width: 500px; */
 height: 400px;
 }
 
-.folderItem{
-
-}
 .folderButtons{
     display: flex;
     align-items: center;
@@ -65,17 +196,21 @@ button{
     border-width: 1px;
     border-color: rgb(69, 69, 69);
     text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
 }
 button:hover{
     background-color: rgb(60, 61, 56);
 }
 
 .bigButton{
-    min-width: 140px;
+    min-width: 120px;
     height: 36px;
-    padding: 0;
+    /* padding: 0; */
     text-align: center;
-    margin: auto;
+    margin: 0;
+    padding-top: 4px;
+    padding-inline-end: 14px;
     border-radius: 5px;
 }
 
@@ -91,14 +226,15 @@ button:hover{
 }
 
 .listTitle{
-        white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+    max-width: 430px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .listItem{
     display: flex;
-    height: 50px;
+    height: 60px;
     justify-content: space-between;
     margin-block-end: 4px;
     margin-inline-end: 8px;
@@ -108,25 +244,84 @@ text-overflow: ellipsis;
     align-items: center;
     border-radius: 4px;
     background-color: rgb(43, 43, 43);
+    transition: 100ms;
 }
 
 .listItem:hover{
+    height: 64px;
     background-color: rgb(50, 50, 50);
     border: 1px solid rgb(50, 50, 50);
 }
 
-.listTitle::before{
-    content: XX;
-}
-
 .listButton{
-    width: 25px;
-    height: 25px;
+    width: 24px;
+    height: 24px;
     border-radius: 25%;
 }
 
+/* .driveItem{
+    height: 70px;
+} */
+
+.folderItem{
+    height: 40px;
+    overflow: hidden;
+    align-items: baseline;
+    padding-top: 12px;
+}
+
+.folderItem .listTitleSmall{
+    vertical-align: baseline;
+    height: 0px;
+    transition: 100ms;
+}
+
+.folderItem:hover .listTitleSmall{
+    height: 26px;
+}
+
+.driveTitleBox{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.folderTitleBox{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.listTitleSmall{
+    font-size: small;
+    opacity: 0.5;
+}
+
+.listTitleLarge{
+    height: 28px;
+    vertical-align: middle;
+    text-align: start;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ .listTitleSmall{
+    vertical-align: middle;
+    text-align: start;
+    max-width: 400px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 #buttonsBar{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.displayNone{
+    display: none !important;
 }

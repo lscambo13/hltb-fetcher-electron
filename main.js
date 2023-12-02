@@ -4,9 +4,9 @@ const fs = require('fs')
 const hltb = require('howlongtobeat')
 const hltbService = new hltb.HowLongToBeatService()
 
-process.env.NODE_ENV = 'production'
+process.env.NODE_ENV = 'prod'
 
-const isDev = process.env.NODE_ENV === 'development'
+const isDev = process.env.NODE_ENV === 'dev'
 let mainWin;
 let flag = 'force';
 let gamesScanned = 0
@@ -36,12 +36,15 @@ const resetQueues = () => {
     driveQueueArray = []
     gamePaths = []
     gameFolders = []
+    sendMsg('clearPreview', 'DOM')
+    sendMsg('clearLog', 'DOM')
+    sendMsg('disableStartButton', 'DOM')
 }
 
-
+let logDiag;
 const createMainWindow = () => {
     mainWin = new BrowserWindow({
-        width: isDev ? 1440 : 1280,
+        width: isDev ? 1440 : 1024,
         height: 720,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -51,12 +54,29 @@ const createMainWindow = () => {
             sandbox: true
         },
         transparent: true,
-        backgroundMaterial: 'mica',
+        resizable: true,
+        // backgroundMaterial: 'mica',
         autoHideMenuBar: true,
-
     })
+
+    logDiag = (title, msg, detail) => {
+        dialog.showMessageBox(mainWin, {
+            message: msg,
+            // buttons: ['b1', 'b2', 'c1'],
+            // checkboxLabel: 'check?',
+            title: title,
+            // defaultId: 1,
+            detail: detail,
+            type: 'info',
+            // cancelId: 2
+        }).then((res) => {
+            console.log(res, res.response)
+        }).catch((err) => console.log(err))
+    }
+
     mainWin.loadFile(path.join(__dirname, 'renderer/index.html'))
     if (isDev) mainWin.webContents.openDevTools()
+
     // console.log(giveMeTime())
 }
 
@@ -102,8 +122,8 @@ const logToDisk = () => {
 
 const log = () => {
 
-    let logDiag = dialog.showMessageBox(mainWin, { message: 'OK' })
-    logDiag.then((res) => console.log(res, res.response))
+    // let logDiag = dialog.showMessageBox(mainWin, { message: 'OK' })
+    // logDiag.then((res) => console.log(res, res.response))
 
     sendMsg(`\n`)
     sendMsg(`# # # #   R E S U L T S   # # # #\n`)
@@ -114,14 +134,17 @@ const log = () => {
     sendMsg('Quitting!' + '\n' + 'https://github.com/lscambo13/HLTB_Fetcher\n');
 
     logToDisk()
+    logDiag('Finished', 'Operation completed', `
+    Total Games Scanned: ${gameFolders.length}
+    Success: ${fullGamePaths.length}
+    Could Not Find: ${failedGames.length}\n\nhttps://github.com/lscambo13/HLTB_Fetcher`)
 
     gamesScanned = 0
     totalGamesToScan = 0
     counterGamesFound = 0
     counterGamesNotFound = 0
-    sendMsg('disableStartButton', 'DOM')
-    sendMsg('disableAddButton', 'DOM')
-
+    // sendMsg('disableStartButton', 'DOM')
+    // sendMsg('disableAddButton', 'DOM')
 }
 
 let date = new Date()
@@ -244,7 +267,7 @@ const readDirs = (dir) => {
         }
     });
     gameFolders.forEach((val, index, array) => {
-        sendMsg(val, 'PREVIEW')
+        sendMsg([gamePaths[index], val], 'PREVIEW')
         sendMsg(`SCAN: ${++index}. ${val}`, 'LOG')
         // ++totalGamesToScan
     })
@@ -252,7 +275,7 @@ const readDirs = (dir) => {
 
 let driveQueueArray = [];
 const readQueue = () => {
-    // sendMsg('clearLog', 'DOM')
+    sendMsg('clearLog', 'DOM')
     gamePaths = []
     gameFolders = []
     driveQueueArray.forEach((value, index, array) => {
@@ -261,8 +284,8 @@ const readQueue = () => {
             return
         }
         sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
-        sendMsg(value, 'QUEUE_DRIVE')
-        // sendMsg('clearPreview', 'DOM')
+        sendMsg([path.dirname(value), path.basename(value)], 'QUEUE_DRIVE')
+        sendMsg('clearPreview', 'DOM')
         readDirs(value)
     })
 
