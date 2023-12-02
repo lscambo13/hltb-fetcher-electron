@@ -7,5 +7,12 @@
 		"howlongtobeat"
 	],
 	"editor.formatOnPaste": true,
-	"editor.formatOnSave": true
+	"editor.formatOnSave": true,
+	"[html]": {
+		"editor.defaultFormatter": "vscode.html-language-features"
+	},
+	"html.format.indentInnerHtml": true,
+	"html.format.wrapAttributes": "aligned-multiple",
+	"html.format.extraLiners": "head, body, /html",
+	"html.format.wrapLineLength": 100
 }
