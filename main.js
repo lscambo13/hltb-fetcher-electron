@@ -14,6 +14,9 @@ let totalGamesToScan = 0
 let counterGamesFound = 0
 let counterGamesNotFound = 0
 
+let totalProgress;
+let currentProgress;
+
 class gameObject {
     constructor(name, dir, mainTime, extraTime, completeTime, url) {
         this.gameName = name,
@@ -31,6 +34,8 @@ let failedGames = []
 let failedGameDirs = []
 let passedGames = []
 let passedGameDir = []
+
+let finalLogPath;
 
 const resetQueues = () => {
     driveQueueArray = []
@@ -106,18 +111,28 @@ const giveMeTime = () => {
 }
 
 const logToDisk = () => {
-
+    sendMsg('Generating consolidated report', 'LOG')
     allGames.forEach((val, index) => {
         // console.log(val)
     })
 
     let saveDir = path.join(process.env.HOME, `HLTB_Fetcher/`)
-    if (!fs.existsSync(saveDir)) fs.mkdirSync(saveDir)
+    if (!fs.existsSync(saveDir)) {
+        fs.mkdirSync(saveDir)
+        sendMsg(`Directory created: ${saveDir}`, 'LOG')
+    }
     saveDir = path.join(saveDir, giveMeTime())
     fs.mkdirSync(saveDir)
-    fs.writeFileSync(path.join(saveDir, `/report.json`),
+    sendMsg(`Saving report to ${saveDir}`, 'LOG')
+
+    let finalReport = path.join(saveDir, `/report.json`)
+    fs.writeFileSync(finalReport,
         JSON.stringify(allGames)
     )
+    sendMsg(`Saved final report: ${finalReport}`, 'LOG')
+
+    finalLogPath = path.join(saveDir, `/log.log`)
+    sendMsg(`requestLog`, 'DOM')
 }
 
 const log = () => {
@@ -125,19 +140,21 @@ const log = () => {
     // let logDiag = dialog.showMessageBox(mainWin, { message: 'OK' })
     // logDiag.then((res) => console.log(res, res.response))
 
-    sendMsg(`\n`)
-    sendMsg(`# # # #   R E S U L T S   # # # #\n`)
-    sendMsg(`Total Games Scanned: ${gameFolders.length}`)
-    sendMsg(`Success: ${fullGamePaths.length}`)
-    sendMsg(`Could Not Find: ${failedGames.length}\n`)
-    sendMsg(`# # # # # # # # # # # # # # # # #\n`)
-    sendMsg('Quitting!' + '\n' + 'https://github.com/lscambo13/HLTB_Fetcher\n');
+    // sendMsg(`\n`, 'LOG')
+    // sendMsg(`# # # #   R E S U L T S   # # # #`, 'LOG')
+    sendMsg(` `, 'LOG')
+    sendMsg(`Total folders scanned: ${gameFolders.length}`, 'LOG')
+    sendMsg(`Passed: ${fullGamePaths.length}`, 'LOG')
+    sendMsg(`Failed: ${failedGames.length}`, 'LOG')
+    sendMsg(` `, 'LOG')
+    // sendMsg(`# # # # # # # # # # # # # # # # #\n`, 'LOG')
+    // sendMsg('Finishing', 'LOG');
 
     logToDisk()
     logDiag('Finished', 'Operation completed', `
-    Total Games Scanned: ${gameFolders.length}
-    Success: ${fullGamePaths.length}
-    Could Not Find: ${failedGames.length}\n\nhttps://github.com/lscambo13/HLTB_Fetcher`)
+    Total folders scanned: ${gameFolders.length}
+    Passed: ${fullGamePaths.length}
+    Failed: ${failedGames.length}`)
 
     gamesScanned = 0
     totalGamesToScan = 0
@@ -154,21 +171,23 @@ const saveInfo = (info, coverArt, address) => {
     allGames.push(gameEntry)
 
     if (fs.existsSync(address) && flag == null) {
-        sendMsg('SKIP: ' + info.name + ' - Enable overwrite mode to force refresh')
+        sendMsg('Skip: ' + ' - Enable overwrite mode to force refresh', 'LOG')
         // sendMsg('[INFO]\t\tEnable overwrite mode to force refresh')
         return
     };
 
 
     if (fs.existsSync(address)) {
-        sendMsg('UPDATE: ' + info.name)
         fs.rmSync(address, { recursive: true })
         fs.mkdirSync(address)
+        sendMsg('Save completed by replacing existing data', 'LOG')
+        sendMsg(` `, 'LOG')
     }
     if (!fs.existsSync(address)) {
-        sendMsg('UPDATE: ' + info.name)
         // sendMsg('[FETCHING]\t' + info.name)
         fs.mkdirSync(address)
+        sendMsg('Save completed', 'LOG')
+        sendMsg(` `, 'LOG')
     }
 
     // https.get(coverArt, (res) => {
@@ -195,8 +214,9 @@ const saveInfo = (info, coverArt, address) => {
 
 let searchPromises = []
 const getGameDetail = () => {
-
     Promise.all(searchPromises).then((gameDetails) => {
+        sendMsg(` `, 'LOG')
+        // sendMsg(`Fetch complete`, 'LOG')
         // console.log(`all promises fulfilled`)
         gameDetails.forEach((val, index, array) => {
             // sendMsg(`LOG: ${val.name}`, 'LOG')
@@ -204,34 +224,52 @@ const getGameDetail = () => {
             ++gamesScanned
             // passedGames.push(folder)
             // passedGameDir.push(dir)
+            sendMsg(`Processing: ${val.name}`, 'LOG')
+            sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
             saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'))
+            sendMsg(++currentProgress / totalProgress, 'PROGRESS')
         })
+        sendMsg(` `, 'LOG')
         failedGames.forEach((val, index, array) => {
-            sendMsg(`ERROR: ${val} - Check if the game folder name is spelled correctly`, 'LOG')
+            sendMsg(`Processing: ${val}`, 'LOG')
+            sendMsg(`Failed: Check if the game folder name is spelled correctly`, 'LOG')
+            sendMsg(++currentProgress / totalProgress, 'PROGRESS')
+            // sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
         })
         log()
-    }).catch((error) => console.log(`resolve promises error`, error))
+    }).catch((error) => {
+        sendMsg(error, 'LOG')
+        // console.log(`resolve promises error`, error)
+    })
 }
 
 let gamePaths = []
 let gameFolders = []
 const startOnlineScan = () => {
+    sendMsg(` `, 'LOG')
+    sendMsg(`Searching online according to subdirectory name`, 'LOG')
     gameFolders.forEach((val, index, array) => {
-        // ++gamesScanned
+        sendMsg(`Searching: ${val}`, 'LOG')
         searchPromises.push(hltbService.search(val))
-        // findGame(val, gamePaths[index])
+        sendMsg(++currentProgress / totalProgress, 'PROGRESS')
     })
 
     Promise.all(searchPromises).then((searchResults) => {
+        sendMsg(`Search completed`, 'LOG')
+        sendMsg(` `, 'LOG')
         searchPromises = []
         searchResults.forEach((val, index, array) => {
-            if (val.length !== 0) {
+            if (val.length !== 0 && val[0]) {
+                // sendMsg([index], 'PROGRESS')
+                // sendMsg(`Found: ${val[0].name}`, 'LOG')
                 // console.log(val[0].name)
+                sendMsg(`Fetching: ${val[0].name}`, 'LOG')
                 searchPromises.push(hltbService.detail(val[0].id))
                 gameCovers.push(val[0].imageUrl)
                 fullGamePaths.push(path.join(gamePaths[index], gameFolders[index]))
             } else {
                 // console.log(gameFolders[index])
+                sendMsg(`Not found: ${gameFolders[index]}`, 'LOG')
                 counterGamesNotFound++
                 ++gamesScanned
                 failedGames.push(gameFolders[index])
@@ -239,20 +277,19 @@ const startOnlineScan = () => {
                 // sendMsg('[INFO]\t\tCheck if the game folder name is spelled correctly')
                 // log()
             }
+            sendMsg(++currentProgress / totalProgress, 'PROGRESS')
         })
         getGameDetail()
-    }).catch((error) => console.log(`resolve promises error`, error))
+    }).catch((error) => {
+        sendMsg(error, 'LOG')
+        // console.log(`resolve promises error`, error)
+    })
 
 }
 
 const readDirs = (dir) => {
-    //
-    // reset folder arrays and Call readdir again in case folder has ben renamed!
-    // 
-
     let output = fs.readdirSync(dir, { withFileTypes: true })
     const ignored = (string) => {
-        // 'hjkdfjkhjhk', 'ig me', 
         let ignoredDirs = ['$RECYCLE.BIN', 'System Volume Information', 'msdownld.tmp', '$Trash$'];
         for (let val of ignoredDirs) {
             if (string.includes(val)) return true
@@ -266,10 +303,10 @@ const readDirs = (dir) => {
             gameFolders.push(element.name)
         }
     });
+    totalProgress = gameFolders.length * 3
+    currentProgress = 0
     gameFolders.forEach((val, index, array) => {
         sendMsg([gamePaths[index], val], 'PREVIEW')
-        sendMsg(`SCAN: ${++index}. ${val}`, 'LOG')
-        // ++totalGamesToScan
     })
 }
 
@@ -280,10 +317,11 @@ const readQueue = () => {
     gameFolders = []
     driveQueueArray.forEach((value, index, array) => {
         if (!fs.existsSync(value)) {
-            sendMsg(`ERROR: "${value}" doesn't exist!`);
+            sendMsg(`Failed to queue: "${value}" doesn't exist!`, 'LOG');
             return
         }
-        sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
+        sendMsg(`Added to queue: ${value}`, 'LOG')
+        // sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
         sendMsg([path.dirname(value), path.basename(value)], 'QUEUE_DRIVE')
         sendMsg('clearPreview', 'DOM')
         readDirs(value)
@@ -294,6 +332,11 @@ const readQueue = () => {
 const queueDrives = (pathToDrive) => {
     driveQueueArray.push(pathToDrive)
     sendMsg('enableStartButton', 'DOM')
+}
+
+const restartAll = () => {
+    resetQueues()
+    app.quit()
 }
 
 ipcMain.handle('openRequest', (event, ...args) => {
@@ -317,6 +360,14 @@ ipcMain.handle('openRequest', (event, ...args) => {
         });
     }
     if (args == 'startOperation') startOnlineScan()
+    if (args == 'restartAll') restartAll()
     if (args == 'resetQueue') resetQueues()
     return out
+})
+
+ipcMain.handle('hereIsTheLog', (event, args) => {
+    // console.log('hoho')
+    fs.writeFileSync(finalLogPath, args)
+    sendMsg(`Saved log: ${finalLogPath}`, 'LOG')
+    // return finalLogPath
 })

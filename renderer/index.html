@@ -8,6 +8,7 @@
     <meta http-equiv="X-Content-Security-Policy"
           content="default-src 'self'; style-src-elem 'self'https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'  https://ajax.googleapis.com " />
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="svg-animation.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <!-- <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
@@ -15,84 +16,171 @@
   </head>
 
   <body>
-    <h1>HowLongToBeat Stats Fetcher!</h1>
-    <!-- <h3 id="subtitle">Select Game Drive</h3> -->
 
-    <div id="buttonsBar">
-      <div>
-        <button class="bigButton" id="addButton">
-          <span class="material-symbols-rounded-button">add</span>
-          Add Game Drive</button>
-        <button class="bigButton" id="clearButton">
-          <span class="material-symbols-rounded-button">clear_all</span>
-          Clear Queue</button>
+    <div id="heroContent" class="mainContentBox">
+      <div class="heroContent">
+        <span class="heroText">
+          <p>Working Title</p>
+          <p>We'll fetch game stats, such as how long it takes to finish a game, for your local game
+            library. Just select the folder containing all your games in the next screen, and we'll
+            take care of the rest.</p>
+        </span>
+        <div id="svg-wrapper" class="svg-wrapper">
+          <svg class="colorAccent" fill="#ededed" height="400px" width="400px" version="1.1"
+               id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+               xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-18.56 -18.56 501.00 501.00"
+               xml:space="preserve" stroke="#ededed" stroke-width="2" transform="rotate(0)">
+            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"
+               stroke="#ffe14d" stroke-width="2">
+              <g>
+                <path d="M418.67,256.948V81.985c0-5.523-4.478-10-10-10H10c-5.522,0-10,4.477-10,10v249c0,5.523,4.478,10,10,10h161.531 c8.225,29.33,35.183,50.908,67.105,50.908c21.228,0,41.168-9.654,54.353-26.073h46.839c13.186,16.418,33.126,26.073,54.353,26.073 c38.433,0,69.699-31.267,69.699-69.699C463.879,292.378,445.054,266.885,418.67,256.948z M20,91.985h378.67v160.67 c-1.486-0.095-2.98-0.16-4.49-0.16H268.301l-36.73-36.73l52.729-52.729c1.875-1.875,2.929-4.419,2.929-7.072 s-1.054-5.196-2.93-7.072c-36.871-36.86-96.867-36.862-133.742,0.002c-36.861,36.872-36.861,96.868,0.001,133.741 c6.65,6.65,14.127,12.181,22.3,16.543c-2.403,6.848-3.761,14.178-3.892,21.806H20V91.985z M182.133,281.458 c-6.381-3.426-12.226-7.758-17.43-12.963c-29.067-29.075-29.067-76.384-0.002-105.458c26.675-26.669,68.701-28.871,97.914-6.599 l-52.256,52.255c-3.905,3.905-3.905,10.237,0,14.142l29.658,29.659h-1.381C215.403,252.495,194.804,263.931,182.133,281.458z M394.18,371.893c-16.43,0-31.783-8.117-41.069-21.713c-1.863-2.728-4.954-4.36-8.258-4.36h-56.89c-3.304,0-6.395,1.632-8.258,4.36 c-9.286,13.596-24.639,21.713-41.069,21.713c-27.404,0-49.699-22.295-49.699-49.699s22.295-49.699,49.699-49.699H394.18 c27.404,0,49.699,22.295,49.699,49.699S421.584,371.893,394.18,371.893z"
+                      class="svg-elem-1"></path>
+                <path d="M260.464,312.194H249.2v-11.263c0-5.523-4.478-10-10-10s-10,4.477-10,10v11.263h-11.263c-5.522,0-10,4.477-10,10 s4.478,10,10,10H229.2v11.263c0,5.523,4.478,10,10,10s10-4.477,10-10v-11.263h11.264c5.522,0,10-4.477,10-10 S265.986,312.194,260.464,312.194z"
+                      class="svg-elem-2"></path>
+                <path d="M395.132,333.458c-2.63,0-5.21,1.07-7.069,2.93c-1.86,1.86-2.931,4.44-2.931,7.07c0,2.63,1.07,5.21,2.931,7.07 c1.859,1.86,4.439,2.93,7.069,2.93s5.21-1.07,7.07-2.93c1.86-1.86,2.93-4.44,2.93-7.07c0-2.63-1.069-5.21-2.93-7.07 S397.762,333.458,395.132,333.458z"
+                      class="svg-elem-3"></path>
+                <path d="M373.872,312.198c-2.64,0-5.21,1.06-7.07,2.93c-1.869,1.86-2.93,4.43-2.93,7.07c0,2.63,1.061,5.21,2.93,7.07 c1.86,1.86,4.431,2.92,7.07,2.92c2.63,0,5.21-1.06,7.07-2.92c1.859-1.86,2.93-4.44,2.93-7.07c0-2.64-1.07-5.21-2.93-7.07 C379.072,313.258,376.502,312.198,373.872,312.198z"
+                      class="svg-elem-4"></path>
+                <path d="M395.132,290.928c-2.63,0-5.21,1.07-7.069,2.93c-1.86,1.87-2.931,4.44-2.931,7.07c0,2.63,1.07,5.21,2.931,7.07 c1.859,1.86,4.439,2.93,7.069,2.93s5.21-1.07,7.07-2.93c1.86-1.86,2.93-4.44,2.93-7.07c0-2.63-1.069-5.21-2.93-7.07 C400.342,291.998,397.762,290.928,395.132,290.928z"
+                      class="svg-elem-5"></path>
+                <path d="M416.393,312.198c-2.631,0-5.21,1.06-7.07,2.92c-1.86,1.87-2.93,4.44-2.93,7.08c0,2.63,1.069,5.21,2.93,7.07 c1.86,1.86,4.439,2.93,7.07,2.93c2.64,0,5.21-1.07,7.069-2.93c1.86-1.86,2.931-4.44,2.931-7.07c0-2.64-1.07-5.21-2.931-7.08 C421.603,313.258,419.022,312.198,416.393,312.198z"
+                      class="svg-elem-6"></path>
+              </g>
+            </g>
+            <g id="SVGRepo_iconCarrier">
+              <g>
+                <path d="M418.67,256.948V81.985c0-5.523-4.478-10-10-10H10c-5.522,0-10,4.477-10,10v249c0,5.523,4.478,10,10,10h161.531 c8.225,29.33,35.183,50.908,67.105,50.908c21.228,0,41.168-9.654,54.353-26.073h46.839c13.186,16.418,33.126,26.073,54.353,26.073 c38.433,0,69.699-31.267,69.699-69.699C463.879,292.378,445.054,266.885,418.67,256.948z M20,91.985h378.67v160.67 c-1.486-0.095-2.98-0.16-4.49-0.16H268.301l-36.73-36.73l52.729-52.729c1.875-1.875,2.929-4.419,2.929-7.072 s-1.054-5.196-2.93-7.072c-36.871-36.86-96.867-36.862-133.742,0.002c-36.861,36.872-36.861,96.868,0.001,133.741 c6.65,6.65,14.127,12.181,22.3,16.543c-2.403,6.848-3.761,14.178-3.892,21.806H20V91.985z M182.133,281.458 c-6.381-3.426-12.226-7.758-17.43-12.963c-29.067-29.075-29.067-76.384-0.002-105.458c26.675-26.669,68.701-28.871,97.914-6.599 l-52.256,52.255c-3.905,3.905-3.905,10.237,0,14.142l29.658,29.659h-1.381C215.403,252.495,194.804,263.931,182.133,281.458z M394.18,371.893c-16.43,0-31.783-8.117-41.069-21.713c-1.863-2.728-4.954-4.36-8.258-4.36h-56.89c-3.304,0-6.395,1.632-8.258,4.36 c-9.286,13.596-24.639,21.713-41.069,21.713c-27.404,0-49.699-22.295-49.699-49.699s22.295-49.699,49.699-49.699H394.18 c27.404,0,49.699,22.295,49.699,49.699S421.584,371.893,394.18,371.893z"
+                      class="svg-elem-7"></path>
+                <path d="M260.464,312.194H249.2v-11.263c0-5.523-4.478-10-10-10s-10,4.477-10,10v11.263h-11.263c-5.522,0-10,4.477-10,10 s4.478,10,10,10H229.2v11.263c0,5.523,4.478,10,10,10s10-4.477,10-10v-11.263h11.264c5.522,0,10-4.477,10-10 S265.986,312.194,260.464,312.194z"
+                      class="svg-elem-8"></path>
+                <path d="M395.132,333.458c-2.63,0-5.21,1.07-7.069,2.93c-1.86,1.86-2.931,4.44-2.931,7.07c0,2.63,1.07,5.21,2.931,7.07 c1.859,1.86,4.439,2.93,7.069,2.93s5.21-1.07,7.07-2.93c1.86-1.86,2.93-4.44,2.93-7.07c0-2.63-1.069-5.21-2.93-7.07 S397.762,333.458,395.132,333.458z"
+                      class="svg-elem-9"></path>
+                <path d="M373.872,312.198c-2.64,0-5.21,1.06-7.07,2.93c-1.869,1.86-2.93,4.43-2.93,7.07c0,2.63,1.061,5.21,2.93,7.07 c1.86,1.86,4.431,2.92,7.07,2.92c2.63,0,5.21-1.06,7.07-2.92c1.859-1.86,2.93-4.44,2.93-7.07c0-2.64-1.07-5.21-2.93-7.07 C379.072,313.258,376.502,312.198,373.872,312.198z"
+                      class="svg-elem-10"></path>
+                <path d="M395.132,290.928c-2.63,0-5.21,1.07-7.069,2.93c-1.86,1.87-2.931,4.44-2.931,7.07c0,2.63,1.07,5.21,2.931,7.07 c1.859,1.86,4.439,2.93,7.069,2.93s5.21-1.07,7.07-2.93c1.86-1.86,2.93-4.44,2.93-7.07c0-2.63-1.069-5.21-2.93-7.07 C400.342,291.998,397.762,290.928,395.132,290.928z"
+                      class="svg-elem-11"></path>
+                <path d="M416.393,312.198c-2.631,0-5.21,1.06-7.07,2.92c-1.86,1.87-2.93,4.44-2.93,7.08c0,2.63,1.069,5.21,2.93,7.07 c1.86,1.86,4.439,2.93,7.07,2.93c2.64,0,5.21-1.07,7.069-2.93c1.86-1.86,2.931-4.44,2.931-7.07c0-2.64-1.07-5.21-2.931-7.08 C421.603,313.258,419.022,312.198,416.393,312.198z"
+                      class="svg-elem-12"></path>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <!-- <svg class="heroImage" src="./assets/gamepad-svgrepo-com-colored.svg"></svg> -->
+        <button id="getStartedButton" class="bigButton mainButton">
+          <span class="material-symbols-rounded-button zeroSize">play_arrow</span>
+          Get Started</button>
       </div>
-      <div>
-        <button class="bigButton" id="startButton" disabled="true">
-          <span class="material-symbols-rounded-button">play_arrow</span>
-          Start</button>
+      <div id="notification" class="notification">
+        <span>An update may be available.</span>
+        <span>Update</span>
       </div>
     </div>
 
-    <div id="mainContent" class="displayNone">
+    <div id="mainOptionsMenu" class="displayNone">
+      <h1>HowLongToBeat Stats Fetcher!</h1>
+      <!-- <h3 id="subtitle">Select Game Drive</h3> -->
+      <div id="buttonsBar">
+        <div>
+          <button class="bigButton" id="addButton">
+            <span class="material-symbols-rounded-button">add</span>
+            Add Game Drive</button>
+          <button class="bigButton" id="clearButton">
+            <span class="material-symbols-rounded-button">clear_all</span>
+            Clear Queue</button>
+        </div>
+        <div>
+          <button class="bigButton mainButton" id="startButton" disabled="true">
+            <span class="material-symbols-rounded-button">play_arrow</span>
+            Start</button>
+        </div>
+      </div>
+    </div>
+    <div id="mainContent" class="mainContentBox displayNone">
       <div id="mainContentColumnOne">
         <label for="driveViewArea">Folders to Scan</label>
-        <div class="contentBoxOuter">
-          <div class="contentBoxInner" id="driveViewArea">
-            <div class="listItem driveItem">
-              <span class="listTitle driveTitleBox">
-                <span class="material-symbols-rounded-large">folder_open</span>
-                <span>
-                  <div class="listTitleLarge">kjguji dsggggggggggggggggggggggggggggggggggggggg</div>
-                  <div class="listTitleSmall">D:\projects\hltb-fetcher-electron\test</div>
-                </span>
+        <div class="contentBoxInner" id="driveViewArea">
+          <div class="listItem driveItem displayNone">
+            <span class="listTitle driveTitleBox">
+              <span class="material-symbols-rounded-large">folder_open</span>
+              <span>
+                <div class="listTitleLarge">kjguji</div>
+                <div class="listTitleSmall">D:\projects\hltb-fetcher-electron\test</div>
               </span>
-              <div class="driveButtons">
-                <button class="listButton">
-                  <span class="material-symbols-rounded-tiny">remove</span>
-                </button>
-              </div>
+            </span>
+            <div class="driveButtons">
+              <button class="listButton">
+                <span class="material-symbols-rounded-tiny">remove</span>
+              </button>
             </div>
-            <div id="addButtonLarge" class="listItem">
-              <span class="listTitle">
-                <span class="material-symbols-rounded-large">add</span>
-                Add Game Drive</span>
-              <!-- <div class="driveButtons">
+          </div>
+          <div id="addButtonLarge" class="listItem">
+            <span class="listTitle">
+              <span class="material-symbols-rounded-large">add</span>
+              Add Game Drive
+            </span>
+            <!-- <div class="driveButtons">
                 <button class="listButton">
                   <span class="material-symbols-rounded-tiny">remove</span>
                 </button>
               </div> -->
-            </div>
           </div>
         </div>
         <!-- <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p> -->
       </div>
       <div id="mainContentColumnTwo" class="">
         <label for="folderViewArea">Subfolders detected</label>
-        <div class="contentBoxOuter">
-          <div class="contentBoxInner" name="folderViewArea" id="folderViewArea">
-            <div class="listItem folderItem">
-              <span class="listTitle folderTitleBox">
-                <span class="material-symbols-rounded-large">subdirectory_arrow_right</span>
-                <span>
-                  <div class="listTitleLarge">game folder preview</div>
-                  <div class="listTitleSmall">D:\projects\hltb-fetcher-electron\test</div>
-                </span>
+        <div class="contentBoxInner" name="folderViewArea" id="folderViewArea">
+          <div class="listItem folderItem displayNone">
+            <span class="listTitle folderTitleBox">
+              <span class="material-symbols-rounded-large">subdirectory_arrow_right</span>
+              <span>
+                <div class="listTitleLarge">game folder preview</div>
+                <div class="listTitleSmall">D:\projects\hltb-fetcher-electron\test</div>
               </span>
-              <div class="folderButtons">
-                <button class="listButton showOnHover">
-                  <span class="material-symbols-rounded-tiny">bookmark_manager</span>
-                </button>
-                <button class="listButton folderPassed displayNone">
-                  <span class="material-symbols-rounded-tiny">check</span>
-                </button>
-                <button class="listButton folderFailed displayNone">
-                  <span class="material-symbols-rounded-tiny">close</span>
-                </button>
-              </div>
+            </span>
+            <div class="folderButtons">
+              <button class="listButton showOnHover">
+                <span class="material-symbols-rounded-tiny">bookmark_manager</span>
+              </button>
+              <button class="listButton folderPassed displayNone">
+                <span class="material-symbols-rounded-tiny">check</span>
+              </button>
+              <button class="listButton folderFailed displayNone">
+                <span class="material-symbols-rounded-tiny">close</span>
+              </button>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div id="logContent" class="mainContentBox displayNone">
+      <h1>HowLongToBeat Stats Fetcher!</h1>
+      <!-- <h3 id="subtitle">Select Game Drive</h3> -->
+      <div id="logButtonsBar">
+        <div>
+          <button class="bigButton" id="quitButton">
+            <span class="material-symbols-rounded-button">logout</span>
+            Quit</button>
+          <button class="bigButton displayNone" id="">
+            <span class="material-symbols-rounded-button">save</span>
+            Export Log</button>
+        </div>
+        <div>
+          <button class="bigButton mainButton" id="startButton" disabled="true">
+            <span class="material-symbols-rounded-button">leaderboard</span>
+            View Report</button>
+        </div>
+      </div>
+      <div>
+        <textarea id="logTextArea" readonly></textarea>
+      </div>
+
+      <div>
+        <progress class="progressBar" id="progressBar" value="0" max="1"></progress>
+        <!-- <span>Bottom notification text.</span>
+        <span>Action</span> -->
       </div>
     </div>
 
