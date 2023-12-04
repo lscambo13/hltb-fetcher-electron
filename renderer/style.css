@@ -152,10 +152,10 @@ label{
     line-height: 40px;
 }
 
-/* .mainContentBox{
-    max-height: 450px;
-    overflow-y: scroll;
-} */
+.mainContentBox{
+    opacity: 1;
+    transition: 0.25s;
+}
 
 #mainContent {
     display: grid;
@@ -224,6 +224,16 @@ label{
 .notification :nth-child(2):active{
     color: hwb(53 30% 50%);;
     /* background-color: rgb(31, 31, 31); */
+}
+
+/* .shiftedToRight{
+    transform: translateX(160px);
+    opacity: 0;
+} */
+
+.shiftedToLeft{
+    transform: translateX(-60px);
+    opacity: 0;
 }
 
 #getStartedButton{
@@ -369,6 +379,10 @@ button:disabled{
     height: 60px;
     background-color: rgb(50, 50, 50);
     border: 1px solid rgb(50, 50, 50);
+}
+
+.listItem:active{
+opacity: 0.75;
 }
 
 .listButton{

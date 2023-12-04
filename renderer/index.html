@@ -4,12 +4,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="Content-Security-Policy"
-          content="default-src 'self'; style-src-elem 'self' https://fonts.googleapis.com ; font-src 'self' https://fonts.gstatic.com; script-src 'self'  https://ajax.googleapis.com " />
+          content="default-src 'self'; style-src-elem 'self' https://fonts.googleapis.com ; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com" />
     <meta http-equiv="X-Content-Security-Policy"
-          content="default-src 'self'; style-src-elem 'self'https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self'  https://ajax.googleapis.com " />
+          content="default-src 'self'; style-src-elem 'self'https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com" />
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="svg-animation.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="./assets/chart.umd.min.js"></script>
+    <script src="./assets/jquery.min.js"></script>
     <!-- <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
     <title>HowLongToBeat Stats Fetcher</title>
@@ -77,7 +78,7 @@
       </div>
     </div>
 
-    <div id="mainOptionsMenu" class="displayNone">
+    <div id="mainOptionsMenu" class="mainContentBox displayNone">
       <h1>HowLongToBeat Stats Fetcher!</h1>
       <!-- <h3 id="subtitle">Select Game Drive</h3> -->
       <div id="buttonsBar">
@@ -100,7 +101,7 @@
       <div id="mainContentColumnOne">
         <label for="driveViewArea">Folders to Scan</label>
         <div class="contentBoxInner" id="driveViewArea">
-          <div class="listItem driveItem displayNone">
+          <!-- <div data-id="-1" data-hasListener="false" class="listItem driveItem">
             <span class="listTitle driveTitleBox">
               <span class="material-symbols-rounded-large">folder_open</span>
               <span>
@@ -109,29 +110,29 @@
               </span>
             </span>
             <div class="driveButtons">
-              <button class="listButton">
+              <button id="" data-hasListener="false" class="listButton removeFromQueueButton">
                 <span class="material-symbols-rounded-tiny">remove</span>
               </button>
             </div>
-          </div>
-          <div id="addButtonLarge" class="listItem">
+          </div> -->
+          <!-- <div id="addButtonLarge" class="listItem">
             <span class="listTitle">
               <span class="material-symbols-rounded-large">add</span>
               Add Game Drive
             </span>
-            <!-- <div class="driveButtons">
-                <button class="listButton">
-                  <span class="material-symbols-rounded-tiny">remove</span>
-                </button>
-              </div> -->
-          </div>
+            <div class="driveButtons">
+              <button class="listButton">
+                <span class="material-symbols-rounded-tiny">remove</span>
+              </button>
+            </div>
+          </div> -->
         </div>
         <!-- <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p> -->
       </div>
       <div id="mainContentColumnTwo" class="">
         <label for="folderViewArea">Subfolders detected</label>
         <div class="contentBoxInner" name="folderViewArea" id="folderViewArea">
-          <div class="listItem folderItem displayNone">
+          <!-- <div data-id="-1" data-hasListener="false" class="listItem folderItem">
             <span class="listTitle folderTitleBox">
               <span class="material-symbols-rounded-large">subdirectory_arrow_right</span>
               <span>
@@ -140,7 +141,7 @@
               </span>
             </span>
             <div class="folderButtons">
-              <button class="listButton showOnHover">
+              <button id="" data-hasListener="false" class="listButton renameButton showOnHover">
                 <span class="material-symbols-rounded-tiny">bookmark_manager</span>
               </button>
               <button class="listButton folderPassed displayNone">
@@ -150,7 +151,7 @@
                 <span class="material-symbols-rounded-tiny">close</span>
               </button>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -183,6 +184,10 @@
         <span>Action</span> -->
       </div>
     </div>
+
+    <!-- <div id="canvasContentBox" class="canvasContent">
+      <canvas id="canvasContent"></canvas>
+    </div> -->
 
   </body>
   <script src="./renderer.js"></script>

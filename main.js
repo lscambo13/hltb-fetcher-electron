@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron')
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron')
 const path = require('node:path')
 const fs = require('fs')
 const hltb = require('howlongtobeat')
@@ -17,7 +17,7 @@ let counterGamesNotFound = 0
 let totalProgress;
 let currentProgress;
 
-class gameObject {
+class GameObject {
     constructor(name, dir, mainTime, extraTime, completeTime, url) {
         this.gameName = name,
             this.gameDir = dir,
@@ -38,7 +38,7 @@ let passedGameDir = []
 let finalLogPath;
 
 const resetQueues = () => {
-    driveQueueArray = []
+    driveQueueSet.clear()
     gamePaths = []
     gameFolders = []
     sendMsg('clearPreview', 'DOM')
@@ -88,6 +88,8 @@ const createMainWindow = () => {
 app.whenReady().then(() => {
     createMainWindow()
     mainWin.on('closed', () => (mainWin = null));
+}).catch((error) => {
+    console.log(error)
 })
 
 app.on('window-all-closed', () => {
@@ -99,6 +101,20 @@ function sendMsg(msg, channel = 'LOG') {
 }
 
 // #####################################
+
+function unCamelCase(str) {
+    let newStr = str
+        // insert a space between lower & upper
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        // space before last upper in a sequence followed by lower
+        .replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
+        // uppercase the first character
+        .replace(/^./, function (str) { return str.toUpperCase(); })
+    if (newStr != str) {
+        sendMsg(`Name Error: Converting '${str}' to '${newStr}'`, 'LOG')
+    }
+    return newStr
+}
 
 const giveMeTime = () => {
     let d = new Date()
@@ -167,7 +183,7 @@ const log = () => {
 let date = new Date()
 const saveInfo = (info, coverArt, address) => {
 
-    let gameEntry = new gameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverArt)
+    let gameEntry = new GameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverArt)
     allGames.push(gameEntry)
 
     if (fs.existsSync(address) && flag == null) {
@@ -239,6 +255,7 @@ const getGameDetail = () => {
         log()
     }).catch((error) => {
         sendMsg(error, 'LOG')
+        log()
         // console.log(`resolve promises error`, error)
     })
 }
@@ -250,7 +267,7 @@ const startOnlineScan = () => {
     sendMsg(`Searching online according to subdirectory name`, 'LOG')
     gameFolders.forEach((val, index, array) => {
         sendMsg(`Searching: ${val}`, 'LOG')
-        searchPromises.push(hltbService.search(val))
+        searchPromises.push(hltbService.search(unCamelCase(val)))
         sendMsg(++currentProgress / totalProgress, 'PROGRESS')
     })
 
@@ -282,6 +299,7 @@ const startOnlineScan = () => {
         getGameDetail()
     }).catch((error) => {
         sendMsg(error, 'LOG')
+        log()
         // console.log(`resolve promises error`, error)
     })
 
@@ -290,7 +308,7 @@ const startOnlineScan = () => {
 const readDirs = (dir) => {
     let output = fs.readdirSync(dir, { withFileTypes: true })
     const ignored = (string) => {
-        let ignoredDirs = ['$RECYCLE.BIN', 'System Volume Information', 'msdownld.tmp', '$Trash$'];
+        let ignoredDirs = ['$RECYCLE.BIN', 'System Volume Information', 'msdownld.tmp', '$Trash$', 'Steam Controller Configs', 'Steamworks Shared', 'Games'];
         for (let val of ignoredDirs) {
             if (string.includes(val)) return true
         }
@@ -306,37 +324,65 @@ const readDirs = (dir) => {
     totalProgress = gameFolders.length * 3
     currentProgress = 0
     gameFolders.forEach((val, index, array) => {
-        sendMsg([gamePaths[index], val], 'PREVIEW')
+        sendMsg([path.join(gamePaths[index], val), val, gamePaths[index]], 'PREVIEW')
     })
 }
 
-let driveQueueArray = [];
+let driveQueueSet = new Set();
 const readQueue = () => {
-    sendMsg('clearLog', 'DOM')
+    // sendMsg('clearLog', 'DOM')
     gamePaths = []
     gameFolders = []
-    driveQueueArray.forEach((value, index, array) => {
+    sendMsg('clearPreview', 'DOM')
+    driveQueueSet.forEach((value, index, array) => {
         if (!fs.existsSync(value)) {
             sendMsg(`Failed to queue: "${value}" doesn't exist!`, 'LOG');
             return
         }
-        sendMsg(`Added to queue: ${value}`, 'LOG')
-        // sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
-        sendMsg([path.dirname(value), path.basename(value)], 'QUEUE_DRIVE')
-        sendMsg('clearPreview', 'DOM')
         readDirs(value)
     })
 
 }
 
 const queueDrives = (pathToDrive) => {
-    driveQueueArray.push(pathToDrive)
+    if (driveQueueSet.has(pathToDrive)) {
+        sendMsg(`Already exists in queue: ${pathToDrive}`, 'LOG')
+        console.log(driveQueueSet)
+        return
+    }
+    driveQueueSet.add(pathToDrive)
     sendMsg('enableStartButton', 'DOM')
+    sendMsg(`Added to queue: ${pathToDrive}`, 'LOG')
+    // sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
+    sendMsg([pathToDrive, path.basename(pathToDrive), path.dirname(pathToDrive)], 'QUEUE_DRIVE')
 }
 
 const restartAll = () => {
     resetQueues()
     app.quit()
+}
+
+const autoPopulateQueue = () => {
+
+    const popularLocations = [
+        `F:\\Games`,
+        `E:\\Games`,
+        `D:\\projects\\hltb-fetcher-electron\\test`,
+        `D:\\Games`,
+        `C:\\Games`,
+        `C:\\Riot Games`,
+        `C:\\Program Files\\Epic Games`,
+        `C:\\Program Files(x86)`,
+        `C:\\Program Files(x86)\\GOG Galaxy\\Games`,
+        `C:\\Program Files (x86)\\Steam\\steamapps\\common`]
+    popularLocations.forEach((val) => {
+        val = path.join(val)
+        if (fs.existsSync(val)) {
+            console.log(val)
+            queueDrives(val)
+        }
+    })
+    readQueue()
 }
 
 ipcMain.handle('openRequest', (event, ...args) => {
@@ -362,6 +408,7 @@ ipcMain.handle('openRequest', (event, ...args) => {
     if (args == 'startOperation') startOnlineScan()
     if (args == 'restartAll') restartAll()
     if (args == 'resetQueue') resetQueues()
+    if (args == 'autoPopulateQueue') autoPopulateQueue()
     return out
 })
 
@@ -370,4 +417,19 @@ ipcMain.handle('hereIsTheLog', (event, args) => {
     fs.writeFileSync(finalLogPath, args)
     sendMsg(`Saved log: ${finalLogPath}`, 'LOG')
     // return finalLogPath
+})
+
+ipcMain.handle('fsRequest', (event, args) => {
+    let cmd = args[0]
+    let msg = args[1]
+    if (cmd == 'explorer') {
+        shell.openExternal(msg)
+        console.log('exploring', msg)
+    }
+    if (cmd == 'rename') {
+        console.log('renaming', msg)
+    }
+    if (cmd == 'remove') {
+        console.log('removing', msg)
+    }
 })
