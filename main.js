@@ -14,7 +14,7 @@ let totalGamesToScan = 0
 let counterGamesFound = 0
 let counterGamesNotFound = 0
 
-let totalProgress;
+// let totalProgress;
 let currentProgress;
 
 class GameObject {
@@ -39,11 +39,16 @@ let finalLogPath;
 
 const resetQueues = () => {
     driveQueueSet.clear()
+    subDirectoriesSet.clear()
     gamePaths = []
     gameFolders = []
+
+    sendMsg(subDirectoriesSet.size, 'TOTAL_SUBDIRS')
+    sendMsg(driveQueueSet.size, 'TOTAL_DRIVES')
     sendMsg('clearPreview', 'DOM')
     sendMsg('clearLog', 'DOM')
     sendMsg('disableStartButton', 'DOM')
+
 }
 
 let logDiag;
@@ -103,13 +108,10 @@ function sendMsg(msg, channel = 'LOG') {
 // #####################################
 
 function unCamelCase(str) {
-    let newStr = str
-        // insert a space between lower & upper
-        .replace(/([a-z])([A-Z])/g, '$1 $2')
-        // space before last upper in a sequence followed by lower
-        .replace(/\b([A-Z]+)([A-Z])([a-z])/, '$1 $2$3')
-        // uppercase the first character
-        .replace(/^./, function (str) { return str.toUpperCase(); })
+    let newStr = str.replace(/([a-z])([A-Z])|([A-Za-z])(\d+)/g, '$1$3 $2$4')
+        .replace(/(\d+)([A-Za-z])/g, '$1 $2')
+        .replace(/([A-Z])(?=[A-Z][a-z])|(\d+)([A-Za-z])/g, '$1$2 $3');
+    // newStr.replace(/([A-Za-z])(\d)/g, '$1 $2');
     if (newStr != str) {
         sendMsg(`Name Error: Converting '${str}' to '${newStr}'`, 'LOG')
     }
@@ -243,15 +245,15 @@ const getGameDetail = () => {
             sendMsg(`Processing: ${val.name}`, 'LOG')
             sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
             saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'))
-            sendMsg(++currentProgress / totalProgress, 'PROGRESS')
+            // sendMsg(++currentProgress, 'PROGRESS')
         })
         sendMsg(` `, 'LOG')
         failedGames.forEach((val, index, array) => {
             sendMsg(`Processing: ${val}`, 'LOG')
             sendMsg(`Failed: Check if the game folder name is spelled correctly`, 'LOG')
-            sendMsg(++currentProgress / totalProgress, 'PROGRESS')
             // sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
         })
+        sendMsg(++currentProgress, 'PROGRESS')
         log()
     }).catch((error) => {
         sendMsg(error, 'LOG')
@@ -263,13 +265,19 @@ const getGameDetail = () => {
 let gamePaths = []
 let gameFolders = []
 const startOnlineScan = () => {
+
+    subDirectoriesSet.forEach((val, index, array) => {
+        gamePaths.push(path.dirname(val))
+        gameFolders.push(path.basename(val))
+    })
+
     sendMsg(` `, 'LOG')
     sendMsg(`Searching online according to subdirectory name`, 'LOG')
     gameFolders.forEach((val, index, array) => {
         sendMsg(`Searching: ${val}`, 'LOG')
         searchPromises.push(hltbService.search(unCamelCase(val)))
-        sendMsg(++currentProgress / totalProgress, 'PROGRESS')
     })
+    sendMsg(++currentProgress, 'PROGRESS')
 
     Promise.all(searchPromises).then((searchResults) => {
         sendMsg(`Search completed`, 'LOG')
@@ -294,8 +302,8 @@ const startOnlineScan = () => {
                 // sendMsg('[INFO]\t\tCheck if the game folder name is spelled correctly')
                 // log()
             }
-            sendMsg(++currentProgress / totalProgress, 'PROGRESS')
         })
+        sendMsg(++currentProgress, 'PROGRESS')
         getGameDetail()
     }).catch((error) => {
         sendMsg(error, 'LOG')
@@ -305,10 +313,17 @@ const startOnlineScan = () => {
 
 }
 
+let subDirectoriesSet = new Set();
 const readDirs = (dir) => {
     let output = fs.readdirSync(dir, { withFileTypes: true })
     const ignored = (string) => {
-        let ignoredDirs = ['$RECYCLE.BIN', 'System Volume Information', 'msdownld.tmp', '$Trash$', 'Steam Controller Configs', 'Steamworks Shared', 'Games'];
+        let ignoredDirs = ['$RECYCLE.BIN',
+            'System Volume Information',
+            'msdownld.tmp',
+            '$Trash$',
+            'Steam Controller Configs',
+            'Steamworks Shared',
+            'Games'];
         for (let val of ignoredDirs) {
             if (string.includes(val)) return true
         }
@@ -317,22 +332,39 @@ const readDirs = (dir) => {
 
     output.forEach(element => {
         if (element.isDirectory() && !ignored(element.name)) {
-            gamePaths.push(element.path)
-            gameFolders.push(element.name)
+            let fullDir = path.join(element.path, element.name)
+            subDirectoriesSet.add(fullDir)
+            sendMsg([fullDir, element.name, fullDir], 'PREVIEW')
+            // gamePaths.push(element.path)
+            // gameFolders.push(element.name)
         }
     });
-    totalProgress = gameFolders.length * 3
+    sendMsg(subDirectoriesSet.size, 'TOTAL_SUBDIRS')
+    // totalProgress = 0
     currentProgress = 0
-    gameFolders.forEach((val, index, array) => {
-        sendMsg([path.join(gamePaths[index], val), val, gamePaths[index]], 'PREVIEW')
+    // gameFolders.forEach()
+}
+
+const checkExistingDataInSubDirs = () => {
+    subDirectoriesSet.forEach((val, index, array) => {
+        let subDirs = fs.readdirSync(val)
+        if (subDirs.includes('HowLongToBeat-Stats')) {
+            sendMsg(val, 'DATA_EXISTS_ALREADY');
+            sendMsg(`Stats already exist: "${val}"`, 'LOG');
+            return
+        }
     })
 }
+
+
 
 let driveQueueSet = new Set();
 const readQueue = () => {
     // sendMsg('clearLog', 'DOM')
-    gamePaths = []
-    gameFolders = []
+    // gamePaths = []
+    // gameFolders = []
+    sendMsg(driveQueueSet.size, 'TOTAL_DRIVES')
+    if (driveQueueSet.size == 0) resetQueues()
     sendMsg('clearPreview', 'DOM')
     driveQueueSet.forEach((value, index, array) => {
         if (!fs.existsSync(value)) {
@@ -354,7 +386,7 @@ const queueDrives = (pathToDrive) => {
     sendMsg('enableStartButton', 'DOM')
     sendMsg(`Added to queue: ${pathToDrive}`, 'LOG')
     // sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
-    sendMsg([pathToDrive, path.basename(pathToDrive), path.dirname(pathToDrive)], 'QUEUE_DRIVE')
+    sendMsg([pathToDrive, path.basename(pathToDrive), pathToDrive], 'QUEUE_DRIVE')
 }
 
 const restartAll = () => {
@@ -363,7 +395,6 @@ const restartAll = () => {
 }
 
 const autoPopulateQueue = () => {
-
     const popularLocations = [
         `F:\\Games`,
         `E:\\Games`,
@@ -398,6 +429,7 @@ ipcMain.handle('openRequest', (event, ...args) => {
                 if (!result.canceled) {
                     queueDrives(result.filePaths[0])
                     readQueue()
+                    checkExistingDataInSubDirs()
                     resolve()
                 }
             }).catch(err => {
@@ -416,20 +448,29 @@ ipcMain.handle('hereIsTheLog', (event, args) => {
     // console.log('hoho')
     fs.writeFileSync(finalLogPath, args)
     sendMsg(`Saved log: ${finalLogPath}`, 'LOG')
+    sendMsg(++currentProgress, 'PROGRESS')
     // return finalLogPath
 })
 
 ipcMain.handle('fsRequest', (event, args) => {
     let cmd = args[0]
-    let msg = args[1]
-    if (cmd == 'explorer') {
+    let msg;
+    if (args[1]) msg = path.join(args[1])
+    if (cmd == 'explore') {
         shell.openExternal(msg)
-        console.log('exploring', msg)
+        // console.log('exploring', msg)
     }
     if (cmd == 'rename') {
         console.log('renaming', msg)
     }
-    if (cmd == 'remove') {
-        console.log('removing', msg)
+    if (cmd == 'removeFromQueue') {
+        driveQueueSet.delete(msg)
+        subDirectoriesSet.clear()
+        readQueue()
+        // console.log('removing', msg, driveQueueSet)
+        checkExistingDataInSubDirs()
+    }
+    if (cmd == 'checkExistingData') {
+        checkExistingDataInSubDirs();
     }
 })

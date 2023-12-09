@@ -32,6 +32,7 @@ getStartedButton.addEventListener('click', () => {
     mainOptionsMenu.classList.remove('displayNone')
     mainContent.classList.remove('displayNone')
   }, 250)
+  bridgeApi.invoke('fsRequest', ['checkExistingData', null])
 })
 
 quitButton.addEventListener('click', () => {
@@ -45,8 +46,11 @@ const addClickHandlers = () => {
     const openFolder = (event) => {
       event.stopPropagation()
       let e = event.target.closest('.listItem')
-      console.log(e.getAttributeNode('data-id').value)
-      bridgeApi.invoke('fsRequest', ['explorer', e.getAttributeNode('data-id').value])
+      e = e.querySelector('.listTitleSmall').textContent
+
+      // e = e.childNodes[1].childNodes[3].childNodes[3].textContent
+      // console.log(e)
+      bridgeApi.invoke('fsRequest', ['explore', e])
     }
     if (item.getAttributeNode('data-hasListener').value == 'false') {
       item.addEventListener('click', (event) => openFolder(event))
@@ -60,8 +64,11 @@ const addClickHandlers = () => {
     const removeFromQueue = (event) => {
       event.stopPropagation()
       let e = event.target.closest('.listItem')
+      let t = e.querySelector('.listTitleSmall').textContent
       // console.log(e.getAttributeNode('data-id').value)
-      bridgeApi.invoke('fsRequest', ['remove', e.getAttributeNode('data-id').value])
+      // e = e.childNodes[1].childNodes[3].childNodes[3].textContent
+      bridgeApi.invoke('fsRequest', ['removeFromQueue', t])
+      e.remove()
     }
     if (item.getAttributeNode('data-hasListener').value == 'false') {
       item.addEventListener('click', (event) => removeFromQueue(event), true)
@@ -76,7 +83,10 @@ const addClickHandlers = () => {
       event.stopPropagation()
       let e = event.target.closest('.listItem')
       // console.log(e.getAttributeNode('data-id').value)
-      bridgeApi.invoke('fsRequest', ['rename', e.getAttributeNode('data-id').value])
+      e = e.querySelector('.listTitleSmall').textContent
+      // e = e.childNodes[1].childNodes[3].childNodes[3].textContent
+
+      bridgeApi.invoke('fsRequest', ['rename', e])
     }
     if (item.getAttributeNode('data-hasListener').value == 'false') {
       item.addEventListener('click', (event) => renameFolder(event), true)
@@ -132,14 +142,22 @@ startButton.addEventListener('click', async (...args) => {
   res = await bridgeApi.invoke('openRequest', 'startOperation')
 })
 
+const sanitizeSlashes = (pathWithSlashes) => {
+  return pathWithSlashes.replaceAll('\\', '//');
+}
+
 bridgeApi.on('PROGRESS', (args) => setProgress(args))
+bridgeApi.on('TOTAL_SUBDIRS', (args) => setTotalSubDirs(args))
+bridgeApi.on('TOTAL_DRIVES', (args) => setTotalDrives(args))
+bridgeApi.on('DATA_EXISTS_ALREADY', (args) => setExistsIndicator(args))
 bridgeApi.on('LOG', (args) => logPrint(args))
 bridgeApi.on('DOM', (args) => affectDOM(args))
 bridgeApi.on('PREVIEW', (args) => previewPrint(args))
 bridgeApi.on('QUEUE_DRIVE', (args) => {
-  let id = args[0]
+  let id = sanitizeSlashes(args[0])
   let title = args[1]
   let path = args[2]
+  if (!title) title = path
   // let title = args[1]
   // let path = args[0]
   // if (title == '') {
@@ -210,8 +228,30 @@ const logPrint = (args) => {
   logTextArea.scrollTop = logTextArea.scrollHeight
 }
 
+const setTotalSubDirs = (args) => {
+  document
+    .querySelector('#totalSubDirs')
+    .innerHTML = `Subfolders detected (${args})`
+}
+
+const setTotalDrives = (args) => {
+  document
+    .querySelector('#totalDrives')
+    .innerHTML = `Folders to scan (${args})`
+}
+
+
+const setExistsIndicator = (args) => {
+  let dataID = document.querySelector(`[data-id="${sanitizeSlashes(args)}"]`)
+  let pass = dataID.querySelector('.folderPassed')
+  let fail = dataID.querySelector('.folderFailed')
+  pass.classList.remove('displayNone')
+  fail.classList.add('displayNone')
+
+}
+
 const previewPrint = (args) => {
-  let id = args[0]
+  let id = sanitizeSlashes(args[0])
   let title = args[1]
   let path = args[2]
   // if (title == '') {
@@ -233,7 +273,7 @@ const previewPrint = (args) => {
               <button class="listButton folderPassed displayNone">
                 <span class="material-symbols-rounded-tiny">check</span>
               </button>
-              <button class="listButton folderFailed displayNone">
+              <button class="listButton folderFailed">
                 <span class="material-symbols-rounded-tiny">close</span>
               </button>
             </div>

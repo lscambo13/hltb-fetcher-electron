@@ -95,11 +95,29 @@ body{
 }
 
 .folderFailed{
-    background-color: rgba(255, 110, 110, 0.425);
+    color: rgba(255, 110, 110, 1);
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border-style: none;
 }
 
 .folderPassed{
-    background-color: rgba(132, 255, 110, 0.425);
+    color: rgba(132, 255, 110, 1);
+        padding: 0;
+    margin: 0;
+    background-color: transparent;
+    border-style: none;
+}
+
+.folderPassed:hover{
+    background-color: transparent;
+    border-style: none;
+}
+
+.folderFailed:hover{
+    background-color: transparent;
+    border-style: none;
 }
 
 .showOnHover{
@@ -433,7 +451,7 @@ opacity: 0.75;
     height: 28px;
     vertical-align: middle;
     text-align: start;
-    max-width: 400px;
+    max-width: 300px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -442,7 +460,7 @@ opacity: 0.75;
  .listTitleSmall{
     vertical-align: middle;
     text-align: start;
-    max-width: 400px;
+    max-width: 300px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

@@ -72,7 +72,7 @@
           <span class="material-symbols-rounded-button zeroSize">play_arrow</span>
           Get Started</button>
       </div>
-      <div id="notification" class="notification">
+      <div id="notification" class="notification displayNone">
         <span>An update may be available.</span>
         <span>Update</span>
       </div>
@@ -99,7 +99,7 @@
     </div>
     <div id="mainContent" class="mainContentBox displayNone">
       <div id="mainContentColumnOne">
-        <label for="driveViewArea">Folders to Scan</label>
+        <label id="totalDrives" for="driveViewArea">Folders to scan (0)</label>
         <div class="contentBoxInner" id="driveViewArea">
           <!-- <div data-id="-1" data-hasListener="false" class="listItem driveItem">
             <span class="listTitle driveTitleBox">
@@ -130,7 +130,7 @@
         <!-- <p>Extra Options:</p><p>Overwrite old stats</p><p>Pull cover art</p> -->
       </div>
       <div id="mainContentColumnTwo" class="">
-        <label for="folderViewArea">Subfolders detected</label>
+        <label id="totalSubDirs" for="folderViewArea">Subfolders detected (0)</label>
         <div class="contentBoxInner" name="folderViewArea" id="folderViewArea">
           <!-- <div data-id="-1" data-hasListener="false" class="listItem folderItem">
             <span class="listTitle folderTitleBox">
@@ -147,7 +147,7 @@
               <button class="listButton folderPassed displayNone">
                 <span class="material-symbols-rounded-tiny">check</span>
               </button>
-              <button class="listButton folderFailed displayNone">
+              <button class="listButton folderFailed">
                 <span class="material-symbols-rounded-tiny">close</span>
               </button>
             </div>
@@ -179,7 +179,7 @@
       </div>
 
       <div>
-        <progress class="progressBar" id="progressBar" value="0" max="1"></progress>
+        <progress class="progressBar" id="progressBar" value="0" max="5"></progress>
         <!-- <span>Bottom notification text.</span>
         <span>Action</span> -->
       </div>
