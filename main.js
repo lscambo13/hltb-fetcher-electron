@@ -358,7 +358,7 @@ const checkExistingDataInSubDirs = () => {
         let subDirs = fs.readdirSync(val)
         if (subDirs.includes('HowLongToBeat-Stats')) {
             sendMsg(val, 'DATA_EXISTS_ALREADY');
-            sendMsg(`Stats already exist: "${val}"`, 'LOG');
+            // sendMsg(`Stats already exist: "${val}"`, 'LOG');
             return
         }
     })
