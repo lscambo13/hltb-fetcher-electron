@@ -18,6 +18,19 @@
 
   <body>
 
+    <div class="moreOptions displayNone" id="moreOptions">
+      <div class="moreOptionItem">
+        <input type="checkbox" name="forceOverwrite" id="forceOverwrite" value="forceOverwrite"
+               class="checkbox" checked>
+        <label for="forceOverwrite">Overwrite existing stats</label>
+      </div>
+      <div class="moreOptionItem">
+        <input type="checkbox" name="downloadCoverArts" id="downloadCoverArts"
+               value="downloadCoverArts" class="checkbox" checked>
+        <label for="downloadCoverArts">Download game posters</label>
+      </div>
+    </div>
+
     <div id="heroContent" class="mainContentBox">
       <div class="heroContent">
         <span class="heroText">
@@ -89,6 +102,9 @@
           <button class="bigButton" id="clearButton">
             <span class="material-symbols-rounded-button">clear_all</span>
             Clear Queue</button>
+          <button class="tinyButton material-symbols-rounded-button" id="moreButton">
+            more_horiz
+          </button>
         </div>
         <div>
           <button class="bigButton mainButton" id="startButton" disabled="true">
@@ -154,6 +170,14 @@
           </div> -->
         </div>
       </div>
+    </div>
+    <div id="emptyQueueBox" class="mainContentBox displayNone">
+      <div class="heroContent"><span class="heroText">
+          <p>Nothing to scan</p>
+          <p>No folders are queued to scan. In case we're unable to find your games automatically,
+            you'll have to add each game drive manually.
+            Just select the main folder that includes all your game folders.</p>
+        </span></div>
     </div>
 
     <div id="logContent" class="mainContentBox displayNone">

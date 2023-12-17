@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron')
 const path = require('node:path')
 const fs = require('fs')
+const stream = require('stream')
 const hltb = require('howlongtobeat')
 const hltbService = new hltb.HowLongToBeatService()
 
@@ -8,7 +9,9 @@ process.env.NODE_ENV = 'prod'
 
 const isDev = process.env.NODE_ENV === 'dev'
 let mainWin;
-let flag = 'force';
+let forceOverwrite = true;
+let downloadCoverArts = true;
+
 let gamesScanned = 0
 let totalGamesToScan = 0
 let counterGamesFound = 0
@@ -48,7 +51,6 @@ const resetQueues = () => {
     sendMsg('clearPreview', 'DOM')
     sendMsg('clearLog', 'DOM')
     sendMsg('disableStartButton', 'DOM')
-
 }
 
 let logDiag;
@@ -63,9 +65,10 @@ const createMainWindow = () => {
             contextIsolation: true,
             sandbox: true
         },
-        transparent: true,
+        // transparent: true,
         resizable: true,
         // backgroundMaterial: 'mica',
+        // backgroundColor: '#333333',
         autoHideMenuBar: true,
     })
 
@@ -128,7 +131,7 @@ const giveMeTime = () => {
     return `${d.getFullYear()}-${++m}-${d.getDate()} ${t}`
 }
 
-const logToDisk = () => {
+const logToDisk = (code) => {
     sendMsg('Generating consolidated report', 'LOG')
     allGames.forEach((val, index) => {
         // console.log(val)
@@ -151,6 +154,7 @@ const logToDisk = () => {
 
     finalLogPath = path.join(saveDir, `/log.log`)
     sendMsg(`requestLog`, 'DOM')
+    if (code == 0) sendMsg(++currentProgress, 'PROGRESS')
 }
 
 const log = () => {
@@ -168,7 +172,7 @@ const log = () => {
     // sendMsg(`# # # # # # # # # # # # # # # # #\n`, 'LOG')
     // sendMsg('Finishing', 'LOG');
 
-    logToDisk()
+    logToDisk(failedGames.length)
     logDiag('Finished', 'Operation completed', `
     Total folders scanned: ${gameFolders.length}
     Passed: ${fullGamePaths.length}
@@ -188,7 +192,7 @@ const saveInfo = (info, coverArt, address) => {
     let gameEntry = new GameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverArt)
     allGames.push(gameEntry)
 
-    if (fs.existsSync(address) && flag == null) {
+    if (fs.existsSync(address) && forceOverwrite == false) {
         sendMsg('Skip: ' + ' - Enable overwrite mode to force refresh', 'LOG')
         // sendMsg('[INFO]\t\tEnable overwrite mode to force refresh')
         return
@@ -208,16 +212,20 @@ const saveInfo = (info, coverArt, address) => {
         sendMsg(` `, 'LOG')
     }
 
-    // https.get(coverArt, (res) => {
-    // 	// Image will be stored at this address 
-    // 	const img = `${address}/coverArt.jpeg`;
-    // 	const fileaddress = fs.createWriteStream(img);
-    // 	res.pipe(fileaddress);
-    // 	fileaddress.on('finish', () => {
-    // 		fileaddress.close();
-    // 		// console.log('Download Completed');  
-    // 	})
-    // })
+    if (downloadCoverArts) {
+        fetch(coverArt)
+            .then((res) => {
+                const img = path.join(address, path.basename(coverArt));
+                const fileAddress = fs.createWriteStream(img);
+                stream.Readable.fromWeb(res.body)
+                    .pipe(fileAddress);
+                fileAddress.on('finish', () => {
+                    fileAddress.close();
+                    console.log('Download Completed');
+                })
+                // console.log(res)
+            }).catch(e => console.log(e))
+    }
 
     let safeName = info.name.replace(/[/\\?%*:|"<>]/g, '')
     let lineOne = `${info.name} (${info.id})\n\nThis game takes about ${info.gameplayMain} hours to beat for the main campaign only.\n\n`
@@ -405,11 +413,12 @@ const autoPopulateQueue = () => {
         `C:\\Program Files\\Epic Games`,
         `C:\\Program Files(x86)`,
         `C:\\Program Files(x86)\\GOG Galaxy\\Games`,
-        `C:\\Program Files (x86)\\Steam\\steamapps\\common`]
+        `C:\\Program Files (x86)\\Steam\\steamapps\\common`
+    ]
     popularLocations.forEach((val) => {
         val = path.join(val)
         if (fs.existsSync(val)) {
-            console.log(val)
+            console.log('auto: ', val)
             queueDrives(val)
         }
     })
@@ -454,17 +463,16 @@ ipcMain.handle('hereIsTheLog', (event, args) => {
 
 ipcMain.handle('fsRequest', (event, args) => {
     let cmd = args[0]
-    let msg;
-    if (args[1]) msg = path.join(args[1])
+    let msg = args[1]
     if (cmd == 'explore') {
-        shell.openExternal(msg)
+        shell.openExternal(path.join(msg))
         // console.log('exploring', msg)
     }
     if (cmd == 'rename') {
         console.log('renaming', msg)
     }
     if (cmd == 'removeFromQueue') {
-        driveQueueSet.delete(msg)
+        driveQueueSet.delete(path.join(msg))
         subDirectoriesSet.clear()
         readQueue()
         // console.log('removing', msg, driveQueueSet)
@@ -472,5 +480,13 @@ ipcMain.handle('fsRequest', (event, args) => {
     }
     if (cmd == 'checkExistingData') {
         checkExistingDataInSubDirs();
+    }
+    if (cmd == 'forceOverwrite') {
+        forceOverwrite = msg
+        console.log('overwriting', forceOverwrite)
+    }
+    if (cmd == 'downloadCoverArts') {
+        downloadCoverArts = msg
+        console.log('download coverArt', downloadCoverArts)
     }
 })

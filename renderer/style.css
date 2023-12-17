@@ -11,6 +11,7 @@
 }
 :root {
   color-scheme: dark;
+  background-color: #1A1A1A;
   padding: 20px;
   box-sizing: border-box;
   cursor: default;
@@ -347,6 +348,17 @@ label{
     border-radius: 6px;
 }
 
+.tinyButton{
+    width: 38px;
+    height: 36px;
+    /* padding: 0; */
+    text-align: center;
+    margin: 0;
+    padding-top: 4px;
+    padding-inline-end: 14px;
+    border-radius: 6px;
+}
+
 button{
     background-color: rgb(53, 53, 53);
     border-style: solid;
@@ -478,6 +490,38 @@ opacity: 0.75;
     margin-bottom: 30px;
 }
 
+.moreOptions{
+    position: fixed;
+    overflow: hidden;
+    height: 0px;
+    width: 250px;
+    border-radius: 6px;
+    padding-inline: 4px;
+    padding-block: 2px;
+    background-color: rgb(43, 43, 43);
+    transition: 100ms;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.moreOptionItem{
+    margin-block: 4px;
+    border-radius: 6px;
+    padding-inline-start: 6px;
+}
+
+.moreOptionItem:hover{
+    background-color: rgb(50, 50, 50);
+}
+
+input{
+    vertical-align: middle
+}
+label{
+    vertical-align: middle
+}
+.placeholderText{
+font-size: x-large;
+}
 
 .displayNone{
     display: none !important;

@@ -2,9 +2,13 @@ const getStartedButton = document.querySelector('#getStartedButton')
 const addButton = document.querySelector('#addButton')
 const quitButton = document.querySelector('#quitButton')
 
+const moreButton = document.querySelector('#moreButton')
+const moreOptions = document.querySelector('.moreOptions')
+
 const heroContent = document.querySelector('#heroContent')
 const mainOptionsMenu = document.querySelector('#mainOptionsMenu')
 const mainContent = document.querySelector('#mainContent')
+const emptyQueueBox = document.querySelector('#emptyQueueBox')
 const logContent = document.querySelector('#logContent')
 
 const addButtonLarge = document.querySelector('#addButtonLarge')
@@ -17,9 +21,67 @@ const select = document.querySelector('#select')
 const progressBar = document.querySelector('#progressBar')
 const canvasContent = document.querySelector('#canvasContent')
 
+// let isQueueEmpty = true
+
 document.addEventListener('DOMContentLoaded', (event) => {
-  bridgeApi.invoke('openRequest', 'autoPopulateQueue')
 });
+
+let expandMoreOptions = (e) => {
+  let position = moreButton.getBoundingClientRect()
+  if (moreOptions.classList.contains('displayNone')) {
+    moreOptions.style.left = position.left + "px";
+    moreOptions.style.top = position.bottom + 8 + "px";
+    moreOptions.classList.remove('displayNone')
+    setTimeout(() => {
+      moreOptions.style.height = '92px'
+    }, 1)
+  } else collapseMoreOptions(e)
+
+}
+
+let collapseMoreOptions = (e) => {
+  if (e.target.closest('moreOptionItem')) return
+  if (!moreOptions.classList.contains('displayNone')) {
+    moreOptions.style.height = '0px'
+    setTimeout(() => {
+      moreOptions.classList.add('displayNone')
+    }, 100)
+  }
+}
+
+document.addEventListener('click', (event) => {
+  switch (event.target.id) {
+    case 'moreButton': {
+      expandMoreOptions(event)
+      break;
+    }
+    case 'value': {
+      break;
+    }
+    default: {
+      collapseMoreOptions(event)
+      break;
+    }
+  }
+})
+
+// let checkMoreOptions = (e) => {
+//   e.preventDefault()
+// }
+
+document.querySelectorAll('.moreOptionItem').forEach((value) => {
+  value.addEventListener('click', (e) => {
+    e.stopPropagation()
+  })
+})
+
+document.querySelectorAll('.checkbox').forEach((value) => {
+  bridgeApi.invoke('fsRequest', [value.id, value.checked])
+  value.addEventListener('click', (e) => {
+    bridgeApi.invoke('fsRequest', [value.id, value.checked])
+    console.log(value.id, value.checked)
+  })
+})
 
 clearButton.addEventListener('click', () => {
   bridgeApi.invoke('openRequest', 'resetQueue')
@@ -30,7 +92,9 @@ getStartedButton.addEventListener('click', () => {
   setTimeout(() => {
     heroContent.classList.add('displayNone')
     mainOptionsMenu.classList.remove('displayNone')
-    mainContent.classList.remove('displayNone')
+    bridgeApi.invoke('openRequest', 'autoPopulateQueue')
+    // if (isQueueEmpty) emptyQueueBox.classList.remove('displayNone')
+    // if (!isQueueEmpty) mainContent.classList.remove('displayNone')
   }, 250)
   bridgeApi.invoke('fsRequest', ['checkExistingData', null])
 })
@@ -187,13 +251,9 @@ bridgeApi.on('QUEUE_DRIVE', (args) => {
 const affectDOM = (args) => {
   if (args == 'enableStartButton') {
     startButton.disabled = false
-    // document.querySelector('#mainContent')
-    //   .classList.remove('displayNone')
   }
   if (args == 'disableStartButton') {
     startButton.disabled = true
-    // document.querySelector('#mainContent')
-    //   .classList.add('displayNone')
   }
   if (args == 'enableAddButton') {
     addButton.disabled = false
@@ -218,12 +278,12 @@ const affectDOM = (args) => {
 }
 
 const setProgress = (args) => {
-  console.log(args)
+  console.log('Progress ', args)
   progressBar.value = args
 }
 
 const logPrint = (args) => {
-  console.log(args)
+  // console.log(args)
   logTextArea.textContent = logTextArea.textContent + args + '\n'
   logTextArea.scrollTop = logTextArea.scrollHeight
 }
@@ -235,6 +295,13 @@ const setTotalSubDirs = (args) => {
 }
 
 const setTotalDrives = (args) => {
+  if (args == 0) {
+    emptyQueueBox.classList.remove('displayNone')
+    mainContent.classList.add('displayNone')
+  } else {
+    emptyQueueBox.classList.add('displayNone')
+    mainContent.classList.remove('displayNone')
+  }
   document
     .querySelector('#totalDrives')
     .innerHTML = `Folders to scan (${args})`
