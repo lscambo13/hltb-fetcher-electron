@@ -381,7 +381,6 @@ const readQueue = () => {
         }
         readDirs(value)
     })
-
 }
 
 const queueDrives = (pathToDrive) => {

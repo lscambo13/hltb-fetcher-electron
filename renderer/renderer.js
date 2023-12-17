@@ -96,7 +96,6 @@ getStartedButton.addEventListener('click', () => {
     // if (isQueueEmpty) emptyQueueBox.classList.remove('displayNone')
     // if (!isQueueEmpty) mainContent.classList.remove('displayNone')
   }, 250)
-  bridgeApi.invoke('fsRequest', ['checkExistingData', null])
 })
 
 quitButton.addEventListener('click', () => {
@@ -292,6 +291,8 @@ const setTotalSubDirs = (args) => {
   document
     .querySelector('#totalSubDirs')
     .innerHTML = `Subfolders detected (${args})`
+  bridgeApi.invoke('fsRequest', ['checkExistingData', null])
+
 }
 
 const setTotalDrives = (args) => {
@@ -314,7 +315,6 @@ const setExistsIndicator = (args) => {
   let fail = dataID.querySelector('.folderFailed')
   pass.classList.remove('displayNone')
   fail.classList.add('displayNone')
-
 }
 
 const previewPrint = (args) => {
@@ -337,10 +337,10 @@ const previewPrint = (args) => {
               <button id="" data-hasListener="false" class="listButton renameButton showOnHover">
                 <span class="material-symbols-rounded-tiny">bookmark_manager</span>
               </button>
-              <button class="listButton folderPassed displayNone">
+              <button class="listButton folderPassed displayNone" title="Data exists already">
                 <span class="material-symbols-rounded-tiny">check</span>
               </button>
-              <button class="listButton folderFailed">
+              <button class="listButton folderFailed"  title="Data does not exist">
                 <span class="material-symbols-rounded-tiny">close</span>
               </button>
             </div>
