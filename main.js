@@ -187,6 +187,7 @@ const log = () => {
 }
 
 let date = new Date()
+let fetchCoverPromises = [];
 const saveInfo = (info, coverArt, address) => {
 
     let gameEntry = new GameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverArt)
@@ -213,18 +214,14 @@ const saveInfo = (info, coverArt, address) => {
     }
 
     if (downloadCoverArts) {
-        fetch(coverArt)
-            .then((res) => {
-                const img = path.join(address, path.basename(coverArt));
-                const fileAddress = fs.createWriteStream(img);
-                stream.Readable.fromWeb(res.body)
-                    .pipe(fileAddress);
-                fileAddress.on('finish', () => {
-                    fileAddress.close();
-                    console.log('Download Completed');
-                })
-                // console.log(res)
-            }).catch(e => console.log(e))
+        const img = path.join(address, 'poster.jpg');
+        const fileAddress = fs.createWriteStream(img);
+        stream.Readable.fromWeb(coverArt.body)
+            .pipe(fileAddress);
+        fileAddress.on('finish', () => {
+            fileAddress.close();
+            console.log('Download Completed');
+        })
     }
 
     let safeName = info.name.replace(/[/\\?%*:|"<>]/g, '')
@@ -240,34 +237,42 @@ const saveInfo = (info, coverArt, address) => {
 
 let searchPromises = []
 const getGameDetail = () => {
-    Promise.all(searchPromises).then((gameDetails) => {
-        sendMsg(` `, 'LOG')
-        // sendMsg(`Fetch complete`, 'LOG')
-        // console.log(`all promises fulfilled`)
-        gameDetails.forEach((val, index, array) => {
-            // sendMsg(`LOG: ${val.name}`, 'LOG')
-            counterGamesFound++
-            ++gamesScanned
-            // passedGames.push(folder)
-            // passedGameDir.push(dir)
-            sendMsg(`Processing: ${val.name}`, 'LOG')
-            sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
-            saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'))
-            // sendMsg(++currentProgress, 'PROGRESS')
+    const preSaveProcess = (gameCover) => {
+        Promise.all(searchPromises).then((gameDetails) => {
+            sendMsg(` `, 'LOG')
+            // sendMsg(`Fetch complete`, 'LOG')
+            // console.log(`all promises fulfilled`)
+            gameDetails.forEach((val, index, array) => {
+                // sendMsg(`LOG: ${val.name}`, 'LOG')
+                counterGamesFound++
+                ++gamesScanned
+                // passedGames.push(folder)
+                // passedGameDir.push(dir)
+                sendMsg(`Processing: ${val.name}`, 'LOG')
+                sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
+                saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'))
+                // sendMsg(++currentProgress, 'PROGRESS')
+            })
+            sendMsg(` `, 'LOG')
+            failedGames.forEach((val, index, array) => {
+                sendMsg(`Processing: ${val}`, 'LOG')
+                sendMsg(`Failed: Check if the game folder name is spelled correctly`, 'LOG')
+                // sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
+            })
+            sendMsg(++currentProgress, 'PROGRESS')
+            log()
+        }).catch((error) => {
+            sendMsg(error, 'LOG')
+            log()
+            // console.log(`resolve promises error`, error)
         })
-        sendMsg(` `, 'LOG')
-        failedGames.forEach((val, index, array) => {
-            sendMsg(`Processing: ${val}`, 'LOG')
-            sendMsg(`Failed: Check if the game folder name is spelled correctly`, 'LOG')
-            // sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
-        })
-        sendMsg(++currentProgress, 'PROGRESS')
-        log()
-    }).catch((error) => {
-        sendMsg(error, 'LOG')
-        log()
-        // console.log(`resolve promises error`, error)
+    }
+
+    Promise.all(fetchCoverPromises).then((res) => {
+        res.forEach((val) => gameCovers.push(val))
+        preSaveProcess()
     })
+
 }
 
 let gamePaths = []
@@ -298,7 +303,10 @@ const startOnlineScan = () => {
                 // console.log(val[0].name)
                 sendMsg(`Fetching: ${val[0].name}`, 'LOG')
                 searchPromises.push(hltbService.detail(val[0].id))
-                gameCovers.push(val[0].imageUrl)
+                if (downloadCoverArts) {
+                    fetchCoverPromises.push(fetch(val[0].imageUrl))
+                }
+                // gameCovers.push()
                 fullGamePaths.push(path.join(gamePaths[index], gameFolders[index]))
             } else {
                 // console.log(gameFolders[index])
