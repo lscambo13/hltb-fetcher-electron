@@ -17,7 +17,6 @@ let totalGamesToScan = 0
 let counterGamesFound = 0
 let counterGamesNotFound = 0
 
-// let totalProgress;
 let currentProgress;
 
 class GameObject {
@@ -89,8 +88,6 @@ const createMainWindow = () => {
 
     mainWin.loadFile(path.join(__dirname, 'renderer/index.html'))
     if (isDev) mainWin.webContents.openDevTools()
-
-    // console.log(giveMeTime())
 }
 
 app.whenReady().then(() => {
@@ -115,7 +112,6 @@ function unCamelCase(str) {
         .replace(/(\d+)([A-Za-z])/g, '$1 $2')
         .replace(/([A-Z])(?=[A-Z][a-z])|(\d+)([A-Za-z])/g, '$1$2 $3')
         .replace(/-/g, ' ');
-    // newStr.replace(/([A-Za-z])(\d)/g, '$1 $2');
     if (newStr != str) {
         sendMsg(`Name Error: Converting '${str}' to '${newStr}'`, 'LOG')
     }
@@ -134,9 +130,6 @@ const giveMeTime = () => {
 
 const logToDisk = (code) => {
     sendMsg('Generating consolidated report', 'LOG')
-    allGames.forEach((val, index) => {
-        // console.log(val)
-    })
 
     let saveDir = path.join(process.env.HOME, `HLTB_Fetcher/`)
     if (!fs.existsSync(saveDir)) {
@@ -159,19 +152,11 @@ const logToDisk = (code) => {
 }
 
 const log = () => {
-
-    // let logDiag = dialog.showMessageBox(mainWin, { message: 'OK' })
-    // logDiag.then((res) => console.log(res, res.response))
-
-    // sendMsg(`\n`, 'LOG')
-    // sendMsg(`# # # #   R E S U L T S   # # # #`, 'LOG')
     sendMsg(` `, 'LOG')
     sendMsg(`Total folders scanned: ${gameFolders.length}`, 'LOG')
     sendMsg(`Passed: ${fullGamePaths.length}`, 'LOG')
     sendMsg(`Failed: ${failedGames.length}`, 'LOG')
     sendMsg(` `, 'LOG')
-    // sendMsg(`# # # # # # # # # # # # # # # # #\n`, 'LOG')
-    // sendMsg('Finishing', 'LOG');
 
     logToDisk(failedGames.length)
     logDiag('Finished', 'Operation completed', `
@@ -183,20 +168,17 @@ const log = () => {
     totalGamesToScan = 0
     counterGamesFound = 0
     counterGamesNotFound = 0
-    // sendMsg('disableStartButton', 'DOM')
-    // sendMsg('disableAddButton', 'DOM')
 }
 
 let date = new Date()
 let fetchCoverPromises = [];
-const saveInfo = (info, coverArt, address) => {
+const saveInfo = (info, coverArt, address, coverUrl) => {
 
-    let gameEntry = new GameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverArt)
+    let gameEntry = new GameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverUrl)
     allGames.push(gameEntry)
 
     if (fs.existsSync(address) && forceOverwrite == false) {
         sendMsg('Skip: ' + ' - Enable overwrite mode to force refresh', 'LOG')
-        // sendMsg('[INFO]\t\tEnable overwrite mode to force refresh')
         return
     };
 
@@ -208,7 +190,6 @@ const saveInfo = (info, coverArt, address) => {
         sendMsg(` `, 'LOG')
     }
     if (!fs.existsSync(address)) {
-        // sendMsg('[FETCHING]\t' + info.name)
         fs.mkdirSync(address)
         sendMsg('Save completed', 'LOG')
         sendMsg(` `, 'LOG')
@@ -221,7 +202,6 @@ const saveInfo = (info, coverArt, address) => {
             .pipe(fileAddress);
         fileAddress.on('finish', () => {
             fileAddress.close();
-            // console.log('Download Completed');
         })
     }
 
@@ -239,6 +219,7 @@ const saveInfo = (info, coverArt, address) => {
 let searchPromises = []
 const getGameDetail = () => {
     const preSaveProcess = () => {
+        sendMsg(`Waiting for all search queries to resolve`, 'LOG')
         Promise.all(searchPromises).then((gameDetails) => {
             sendMsg(` `, 'LOG')
             gameDetails.forEach((val, index, array) => {
@@ -246,7 +227,7 @@ const getGameDetail = () => {
                 ++gamesScanned
                 sendMsg(`Processing: ${val.name}`, 'LOG')
                 sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
-                saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'))
+                saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'), coverArts[index])
             })
             sendMsg(` `, 'LOG')
             failedGames.forEach((val, index, array) => {
@@ -276,6 +257,7 @@ const getGameDetail = () => {
 
 let gamePaths = []
 let gameFolders = []
+let coverArts = []
 const startOnlineScan = () => {
 
     subDirectoriesSet.forEach((val, index, array) => {
@@ -297,25 +279,19 @@ const startOnlineScan = () => {
         searchPromises = []
         searchResults.forEach((val, index, array) => {
             if (val.length !== 0 && val[0]) {
-                // sendMsg([index], 'PROGRESS')
-                // sendMsg(`Found: ${val[0].name}`, 'LOG')
-                // console.log(val[0].name)
                 sendMsg(`Fetching: ${val[0].name}`, 'LOG')
                 searchPromises.push(hltbService.detail(val[0].id))
                 if (downloadCoverArts) {
+                    coverArts.push(val[0].imageUrl)
                     fetchCoverPromises.push(fetch(val[0].imageUrl))
                 }
-                // gameCovers.push()
                 fullGamePaths.push(path.join(gamePaths[index], gameFolders[index]))
             } else {
-                // console.log(gameFolders[index])
                 sendMsg(`Not found: ${gameFolders[index]}`, 'LOG')
                 counterGamesNotFound++
                 ++gamesScanned
                 failedGames.push(gameFolders[index])
                 failedGameDirs.push(gamePaths[index])
-                // sendMsg('[INFO]\t\tCheck if the game folder name is spelled correctly')
-                // log()
             }
         })
         sendMsg(++currentProgress, 'PROGRESS')
@@ -323,7 +299,6 @@ const startOnlineScan = () => {
     }).catch((error) => {
         sendMsg(error, 'LOG')
         log()
-        // console.log(`resolve promises error`, error)
     })
 
 }
@@ -350,14 +325,10 @@ const readDirs = (dir) => {
             let fullDir = path.join(element.path, element.name)
             subDirectoriesSet.add(fullDir)
             sendMsg([fullDir, element.name, fullDir], 'PREVIEW')
-            // gamePaths.push(element.path)
-            // gameFolders.push(element.name)
         }
     });
     sendMsg(subDirectoriesSet.size, 'TOTAL_SUBDIRS')
-    // totalProgress = 0
     currentProgress = 0
-    // gameFolders.forEach()
 }
 
 const checkExistingDataInSubDirs = () => {
@@ -365,7 +336,6 @@ const checkExistingDataInSubDirs = () => {
         let subDirs = fs.readdirSync(val)
         if (subDirs.includes('HowLongToBeat-Stats')) {
             sendMsg(val, 'DATA_EXISTS_ALREADY');
-            // sendMsg(`Stats already exist: "${val}"`, 'LOG');
             return
         }
     })
@@ -375,9 +345,6 @@ const checkExistingDataInSubDirs = () => {
 
 let driveQueueSet = new Set();
 const readQueue = () => {
-    // sendMsg('clearLog', 'DOM')
-    // gamePaths = []
-    // gameFolders = []
     sendMsg(driveQueueSet.size, 'TOTAL_DRIVES')
     if (driveQueueSet.size == 0) resetQueues()
     sendMsg('clearPreview', 'DOM')
@@ -399,7 +366,6 @@ const queueDrives = (pathToDrive) => {
     driveQueueSet.add(pathToDrive)
     sendMsg('enableStartButton', 'DOM')
     sendMsg(`Added to queue: ${pathToDrive}`, 'LOG')
-    // sendMsg(`INFO: ${++index}. Add to queue - ${value}`, 'LOG')
     sendMsg([pathToDrive, path.basename(pathToDrive), pathToDrive], 'QUEUE_DRIVE')
 }
 
@@ -461,11 +427,9 @@ ipcMain.handle('openRequest', (event, ...args) => {
 })
 
 ipcMain.handle('hereIsTheLog', (event, args) => {
-    // console.log('hoho')
     fs.writeFileSync(finalLogPath, args)
     sendMsg(`Saved log: ${finalLogPath}`, 'LOG')
     sendMsg(++currentProgress, 'PROGRESS')
-    // return finalLogPath
 })
 
 ipcMain.handle('fsRequest', (event, args) => {
@@ -473,7 +437,6 @@ ipcMain.handle('fsRequest', (event, args) => {
     let msg = args[1]
     if (cmd == 'explore') {
         shell.openExternal(path.join(msg))
-        // console.log('exploring', msg)
     }
     else if (cmd == 'rename') {
         console.log('renaming', msg)
@@ -482,7 +445,6 @@ ipcMain.handle('fsRequest', (event, args) => {
         driveQueueSet.delete(path.join(msg))
         subDirectoriesSet.clear()
         readQueue()
-        // console.log('removing', msg, driveQueueSet)
         checkExistingDataInSubDirs()
     }
     else if (cmd == 'checkExistingData') {
