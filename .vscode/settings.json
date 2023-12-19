@@ -4,7 +4,12 @@
 		"electronmon",
 		"gameplay",
 		"hltb",
-		"howlongtobeat"
+		"howlongtobeat",
+		"leaderboard",
+		"msdownld",
+		"steamapps",
+		"Steamworks",
+		"SUBDIRS"
 	],
 	"editor.formatOnPaste": true,
 	"editor.formatOnSave": true,

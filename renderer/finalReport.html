@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="Content-Security-Policy"
+			  content="
+			  default-src 'self'; 
+			  style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; 
+			  font-src 'self' https://fonts.gstatic.com; 
+			  script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net" />
+		<meta http-equiv="X-Content-Security-Policy"
+			  content="default-src 'self'; 
+			  style-src-elem 'self''unsafe-inline'https://fonts.googleapis.com; 
+			  font-src 'self' https://fonts.gstatic.com; 
+			  script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net" />
+		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="finalReport.css">
+		<!-- <link rel="stylesheet" href="svg-animation.css"> -->
+		<!-- <script src="./assets/chart.umd.min.js"></script> -->
+		<!-- <script src="./assets/jquery.min.js"></script> -->
+		<!-- <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
+		<title>HowLongToBeat Stats Fetcher</title>
+	</head>
+
+	<body>
+		<div class="mainHeader">
+			<h1>HowLongToBeat Stats Fetcher!</h1>
+			<button class="tinyButton flatButton material-symbols-rounded-button"
+					id="restartAppButton">
+				restart_alt
+			</button>
+		</div>
+		<canvas id="myChart"></canvas>
+
+	</body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<script type="module" src="./finalReport.js"></script>
+
+</html>

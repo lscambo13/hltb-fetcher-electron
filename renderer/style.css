@@ -206,13 +206,13 @@ label{
     overflow: hidden;
 }
 
-.notification :nth-child(2){
+.notificationButton{
     color: hwb(50 30% 0%);
 }
-.notification :nth-child(2):hover{
+.notificationButton:hover{
     color: hwb(53 40% 0%);;
 }
-.notification :nth-child(2):active{
+.notificationButton:active{
     color: hwb(53 30% 50%);;
 }
 

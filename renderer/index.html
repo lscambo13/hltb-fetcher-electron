@@ -9,8 +9,8 @@
           content="default-src 'self'; style-src-elem 'self'https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com" />
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="svg-animation.css">
-    <script src="./assets/chart.umd.min.js"></script>
-    <script src="./assets/jquery.min.js"></script>
+    <!-- <script src="./assets/chart.umd.min.js"></script> -->
+    <!-- <script src="./assets/jquery.min.js"></script> -->
     <!-- <link rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
     <title>HowLongToBeat Stats Fetcher</title>
@@ -85,9 +85,17 @@
           <span class="material-symbols-rounded-button zeroSize">play_arrow</span>
           Get Started</button>
       </div>
-      <div id="notification" class="notification displayNone">
-        <span>An update may be available.</span>
-        <span>Update</span>
+      <div id="updateNotification" class="notification displayNone">
+        <span class="notificationTitle">An update may be available.</span>
+        <span class="notificationButton" id="updateAppButton">Update</span>
+      </div>
+      <div id="debugMenu" class="notification displayNone">
+        <span class="notificationTitle">Debug menu</span>
+        <span>
+          <span class="notificationButton" id="viewReportButtonDebug">[Final Report]</span>
+          <span class="notificationButton" id="toggleNotificationButtonDebug">
+            [Update Notification]</span>
+        </span>
       </div>
     </div>
 
@@ -203,7 +211,7 @@
             Export Log</button>
         </div>
         <div>
-          <button class="bigButton mainButton" id="startButton" disabled="true">
+          <button class="bigButton mainButton" id="viewReportButton" disabled="true">
             <span class="material-symbols-rounded-button">leaderboard</span>
             View Report</button>
         </div>

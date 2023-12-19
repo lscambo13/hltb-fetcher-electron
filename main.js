@@ -11,14 +11,7 @@ const isDev = process.env.NODE_ENV === 'dev'
 let mainWin;
 let forceOverwrite = true;
 let downloadCoverArts = true;
-
-let gamesScanned = 0
-let totalGamesToScan = 0
-let counterGamesFound = 0
-let counterGamesNotFound = 0
-
 let currentProgress;
-
 class GameObject {
     constructor(name, dir, mainTime, extraTime, completeTime, url) {
         this.gameName = name,
@@ -29,14 +22,9 @@ class GameObject {
 }
 let gameCovers = []
 let fullGamePaths = []
-
 let allGames = []
-
 let failedGames = []
 let failedGameDirs = []
-let passedGames = []
-let passedGameDir = []
-
 let finalLogPath;
 
 const resetQueues = () => {
@@ -82,13 +70,45 @@ const createMainWindow = () => {
             type: 'info',
             // cancelId: 2
         }).then((res) => {
-            console.log(res, res.response)
+            sendMsg(`enableViewReportButton`, 'DOM')
+            // console.log(res, res.response)
         }).catch((err) => console.log(err))
     }
 
     mainWin.loadFile(path.join(__dirname, 'renderer/index.html'))
     if (isDev) mainWin.webContents.openDevTools()
 }
+
+// Function to create child window of parent one 
+function createFinalReportWindow() {
+    finalReportWindow = new BrowserWindow({
+        width: isDev ? 1440 : 1024,
+        height: 700,
+        modal: true,
+        show: false,
+        parent: mainWin, // Make sure to add parent window here 
+
+        // Make sure to add webPreferences with below configuration 
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js'),
+            nodeIntegration: false,
+            contextIsolation: true,
+            enableRemoteModule: false,
+        },
+    });
+
+    // Child window loads settings.html file 
+    finalReportWindow.loadFile(path.join(__dirname, 'renderer/finalReport.html'))
+    if (isDev) finalReportWindow.webContents.openDevTools()
+    // finalReportWindow.loadFile("finalReport.html");
+    finalReportWindow.once("ready-to-show", () => {
+        finalReportWindow.show();
+    });
+}
+
+// ipcMain.on("openChildWindow", (event, arg) => {
+//     createChildWindow();
+// });
 
 app.whenReady().then(() => {
     createMainWindow()
@@ -157,17 +177,7 @@ const log = () => {
     sendMsg(`Passed: ${fullGamePaths.length}`, 'LOG')
     sendMsg(`Failed: ${failedGames.length}`, 'LOG')
     sendMsg(` `, 'LOG')
-
     logToDisk(failedGames.length)
-    logDiag('Finished', 'Operation completed', `
-    Total folders scanned: ${gameFolders.length}
-    Passed: ${fullGamePaths.length}
-    Failed: ${failedGames.length}`)
-
-    gamesScanned = 0
-    totalGamesToScan = 0
-    counterGamesFound = 0
-    counterGamesNotFound = 0
 }
 
 let date = new Date()
@@ -223,8 +233,6 @@ const getGameDetail = () => {
         Promise.all(searchPromises).then((gameDetails) => {
             sendMsg(` `, 'LOG')
             gameDetails.forEach((val, index, array) => {
-                counterGamesFound++
-                ++gamesScanned
                 sendMsg(`Processing: ${val.name}`, 'LOG')
                 sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
                 saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'), coverArts[index])
@@ -288,8 +296,6 @@ const startOnlineScan = () => {
                 fullGamePaths.push(path.join(gamePaths[index], gameFolders[index]))
             } else {
                 sendMsg(`Not found: ${gameFolders[index]}`, 'LOG')
-                counterGamesNotFound++
-                ++gamesScanned
                 failedGames.push(gameFolders[index])
                 failedGameDirs.push(gamePaths[index])
             }
@@ -419,17 +425,45 @@ ipcMain.handle('openRequest', (event, ...args) => {
             })
         });
     }
+    else if (args == 'DOMContentLoaded' && isDev) {
+        sendMsg(`exposeDebugMenu`, 'DOM')
+    }
     else if (args == 'startOperation') startOnlineScan()
     else if (args == 'resetQueue') resetQueues()
     else if (args == 'autoPopulateQueue') autoPopulateQueue()
     else if (args == 'restartApp') restartApp()
+    else if (args == 'quitApp') app.quit()
     return out
 })
+
+ipcMain.handle('endGameRequest', (event, ...args) => {
+    let cmd = args[0]
+    let msg = args[1]
+    if (cmd == 'requestAllGameData') {
+        console.log('incoming')
+        let x
+        if (isDev) {
+            x = require(path.join(process.env.HOME, '/HLTB_Fetcher/ok/report.json'))
+        } else x = allGames
+        finalReportWindow.webContents.send('ALL_GAMES', x)
+    }
+    else if (cmd == 'openFinalReportWindow') {
+        createFinalReportWindow();
+    }
+})
+
+const postFetchStuff = () => {
+    logDiag('Finished', 'Operation completed', `
+    Total folders scanned: ${gameFolders.length}
+    Passed: ${fullGamePaths.length}
+    Failed: ${failedGames.length}`)
+}
 
 ipcMain.handle('hereIsTheLog', (event, args) => {
     fs.writeFileSync(finalLogPath, args)
     sendMsg(`Saved log: ${finalLogPath}`, 'LOG')
     sendMsg(++currentProgress, 'PROGRESS')
+    postFetchStuff()
 })
 
 ipcMain.handle('fsRequest', (event, args) => {

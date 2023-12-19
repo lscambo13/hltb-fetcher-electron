@@ -2,6 +2,12 @@ const getStartedButton = document.querySelector('#getStartedButton')
 const addButton = document.querySelector('#addButton')
 const quitButton = document.querySelector('#quitButton')
 
+const updateNotification = document.querySelector('#updateNotification')
+const debugMenu = document.querySelector('#debugMenu')
+const viewReportButtonDebug = document.querySelector('#viewReportButtonDebug')
+const toggleNotificationButtonDebug = document
+  .querySelector('#toggleNotificationButtonDebug')
+
 const moreButton = document.querySelector('#moreButton')
 const moreOptions = document.querySelector('.moreOptions')
 
@@ -13,6 +19,7 @@ const logContent = document.querySelector('#logContent')
 
 const addButtonLarge = document.querySelector('#addButtonLarge')
 const startButton = document.querySelector('#startButton')
+const viewReportButton = document.querySelector('#viewReportButton')
 const restartAppButton = document.querySelector('#restartAppButton')
 const clearButton = document.querySelector('#clearButton')
 const driveViewArea = document.querySelector('#driveViewArea')
@@ -22,7 +29,12 @@ const select = document.querySelector('#select')
 const progressBar = document.querySelector('#progressBar')
 const canvasContent = document.querySelector('#canvasContent')
 
+const viewReport = () => {
+  bridgeApi.invoke('endGameRequest', 'openFinalReportWindow')
+}
+
 document.addEventListener('DOMContentLoaded', (event) => {
+  bridgeApi.invoke('openRequest', 'DOMContentLoaded')
   addClickHandlers()
   document.addEventListener('click', (event) => {
     switch (event.target.id) {
@@ -73,7 +85,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
   })
 
   quitButton.addEventListener('click', () => {
-    bridgeApi.invoke('openRequest', 'restartAll')
+    bridgeApi.invoke('openRequest', 'quitApp')
   })
   startButton.addEventListener('click', async (...args) => {
     mainContent.classList.add('shiftedToLeft')
@@ -86,9 +98,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     res = await bridgeApi.invoke('openRequest', 'startOperation')
   })
 
+  toggleNotificationButtonDebug.addEventListener('click', () =>
+    updateNotification.classList.toggle('displayNone'))
   addButton.addEventListener('click', addToQueue)
-
-
+  viewReportButton.addEventListener('click', viewReport)
+  viewReportButtonDebug.addEventListener('click', viewReport)
 });
 
 let expandMoreOptions = (e) => {
@@ -287,6 +301,12 @@ const affectDOM = (args) => {
   }
   else if (args == 'enableAddButton') {
     addButton.disabled = false
+  }
+  else if (args == 'enableViewReportButton') {
+    viewReportButton.disabled = false
+  }
+  else if (args == 'exposeDebugMenu') {
+    debugMenu.classList.remove('displayNone')
   }
   else if (args == 'disableAddButton') {
     addButton.disabled = true
