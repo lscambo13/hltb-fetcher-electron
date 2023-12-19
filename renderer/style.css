@@ -18,12 +18,8 @@
 }
 
 body{
-    /* display: flex;
-    flex-direction: column;
-    align-items: center; */
     user-select: none;
     -webkit-user-select: none;
-    /* gap: 100px; */
 }
 
 
@@ -43,9 +39,6 @@ body{
   letter-spacing: normal;
   word-wrap: normal;
   white-space: nowrap;
-  /* margin-top: 6px; */
-  /* margin-inline-start: -2px; */
-  /* /* padding-bottom: 8px; */
   padding-inline-end: 14px;
   direction: ltr;
 }
@@ -68,7 +61,6 @@ body{
   white-space: nowrap;
     margin-top: -3px;
   margin-inline-start: -2px;
-  /* /* padding-bottom: 8px; */
   padding-inline-end: 0px;
   direction: ltr;
 }
@@ -91,7 +83,6 @@ body{
   white-space: nowrap;
   margin-top: -4px;
   margin-inline-start: -2px;
-  /* padding-inline-end: 16px; */
   direction: ltr;
 }
 
@@ -129,14 +120,11 @@ body{
 
 .folderItem:hover > .folderButtons > .showOnHover{
     opacity: 1;
-    /* scale: 1; */
 }
 
 span{
-    /* display: inline-block; */
     vertical-align: middle;
     text-align: center;
-    /* margin-top: 4px; */
     margin: 0;
     padding: 0;
 }
@@ -180,18 +168,13 @@ label{
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 32px;
-    /* width: 750px; */
-    /* height: max-content; */
-    /* margin-block-end: 40px; */
 }
 
 #heroContent{
     height: 600px;
-    /* width: 400px; */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    /* align-items: center; */
 }
 
 .heroContent{
@@ -200,12 +183,6 @@ label{
     align-items: center;
     gap: 12px;
 }
-
-/* .heroImage{
-    width: 250px;
-    height: 250px;
-    margin-bottom: 28px;
-} */
 
 .heroText{
     width: 450px;
@@ -225,30 +202,19 @@ label{
 }
 
 .zeroSize{
-    /* height: 0; */
     width: 8px;
-    /* padding: 6px; */
-    /* clip: auto; */
     overflow: hidden;
 }
 
 .notification :nth-child(2){
     color: hwb(50 30% 0%);
-    /* background-color: rgb(31, 31, 31); */
 }
 .notification :nth-child(2):hover{
     color: hwb(53 40% 0%);;
-    /* background-color: rgb(31, 31, 31); */
 }
 .notification :nth-child(2):active{
     color: hwb(53 30% 50%);;
-    /* background-color: rgb(31, 31, 31); */
 }
-
-/* .shiftedToRight{
-    transform: translateX(160px);
-    opacity: 0;
-} */
 
 .shiftedToLeft{
     transform: translateX(-60px);
@@ -288,39 +254,17 @@ label{
     justify-content: space-between;
 }
 
-#driveViewArea {
-    /* width: 500px; */
-    /* height: 100% */
-}
-
-/* #mainContentColumnOne{
-    max-height: max-content;
-    overflow-y: scroll;
-}
-#mainContentColumnTwo{
-    max-height: max-content;
-    overflow-y: scroll;
-} */
 .contentBoxInner {
     height: 400px;
     overflow-y: scroll;
-    /* overflow-x: hidden; */
-    /* resize: none; */
-    /* border-radius: 5px 0 0 5px; */
-    /* background-color: rgb(43, 43, 43); */
 }
 
-#folderViewArea {
-/* width: 500px; */
-/* height: 400px; */
-}
 
 .folderButtons{
     display: flex;
     align-items: center;
     gap: 10px;
     padding-top: 4px;
-    /* height: 40px; */
     justify-content: center;
 }
 
@@ -340,7 +284,6 @@ label{
 .bigButton{
     min-width: 120px;
     height: 36px;
-    /* padding: 0; */
     text-align: center;
     margin: 0;
     padding-top: 4px;
@@ -425,10 +368,6 @@ opacity: 0.75;
     height: 24px;
     border-radius: 25%;
 }
-
-/* .driveItem{
-    height: 70px;
-} */
 
 .folderItem{
     height: 40px;

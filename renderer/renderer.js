@@ -22,9 +22,73 @@ const select = document.querySelector('#select')
 const progressBar = document.querySelector('#progressBar')
 const canvasContent = document.querySelector('#canvasContent')
 
-// let isQueueEmpty = true
-
 document.addEventListener('DOMContentLoaded', (event) => {
+  addClickHandlers()
+  document.addEventListener('click', (event) => {
+    switch (event.target.id) {
+      case 'moreButton': {
+        expandMoreOptions(event)
+        break;
+      }
+      case 'value': {
+        break;
+      }
+      default: {
+        collapseMoreOptions(event)
+        break;
+      }
+    }
+  })
+
+  document.querySelectorAll('.moreOptionItem').forEach((value) => {
+    value.addEventListener('click', (e) => {
+      e.stopPropagation()
+    })
+  })
+
+  document.querySelectorAll('.checkbox').forEach((value) => {
+    bridgeApi.invoke('fsRequest', [value.id, value.checked])
+    value.addEventListener('click', (e) => {
+      bridgeApi.invoke('fsRequest', [value.id, value.checked])
+      console.log(value.id, value.checked)
+    })
+  })
+
+
+  clearButton.addEventListener('click', () => {
+    bridgeApi.invoke('openRequest', 'resetQueue')
+  })
+
+  restartAppButton.addEventListener('click', () => {
+    bridgeApi.invoke('openRequest', 'restartApp')
+  })
+
+  getStartedButton.addEventListener('click', () => {
+    heroContent.classList.add('shiftedToLeft')
+    setTimeout(() => {
+      heroContent.classList.add('displayNone')
+      mainOptionsMenu.classList.remove('displayNone')
+      bridgeApi.invoke('openRequest', 'autoPopulateQueue')
+    }, 250)
+  })
+
+  quitButton.addEventListener('click', () => {
+    bridgeApi.invoke('openRequest', 'restartAll')
+  })
+  startButton.addEventListener('click', async (...args) => {
+    mainContent.classList.add('shiftedToLeft')
+    mainOptionsMenu.classList.add('shiftedToLeft')
+    setTimeout(() => {
+      mainOptionsMenu.classList.add('displayNone')
+      mainContent.classList.add('displayNone')
+      logContent.classList.remove('displayNone')
+    }, 500)
+    res = await bridgeApi.invoke('openRequest', 'startOperation')
+  })
+
+  addButton.addEventListener('click', addToQueue)
+
+
 });
 
 let expandMoreOptions = (e) => {
@@ -50,63 +114,6 @@ let collapseMoreOptions = (e) => {
   }
 }
 
-document.addEventListener('click', (event) => {
-  switch (event.target.id) {
-    case 'moreButton': {
-      expandMoreOptions(event)
-      break;
-    }
-    case 'value': {
-      break;
-    }
-    default: {
-      collapseMoreOptions(event)
-      break;
-    }
-  }
-})
-
-// let checkMoreOptions = (e) => {
-//   e.preventDefault()
-// }
-
-document.querySelectorAll('.moreOptionItem').forEach((value) => {
-  value.addEventListener('click', (e) => {
-    e.stopPropagation()
-  })
-})
-
-document.querySelectorAll('.checkbox').forEach((value) => {
-  bridgeApi.invoke('fsRequest', [value.id, value.checked])
-  value.addEventListener('click', (e) => {
-    bridgeApi.invoke('fsRequest', [value.id, value.checked])
-    console.log(value.id, value.checked)
-  })
-})
-
-clearButton.addEventListener('click', () => {
-  bridgeApi.invoke('openRequest', 'resetQueue')
-})
-
-restartAppButton.addEventListener('click', () => {
-  bridgeApi.invoke('openRequest', 'restartApp')
-})
-
-getStartedButton.addEventListener('click', () => {
-  heroContent.classList.add('shiftedToLeft')
-  setTimeout(() => {
-    heroContent.classList.add('displayNone')
-    mainOptionsMenu.classList.remove('displayNone')
-    bridgeApi.invoke('openRequest', 'autoPopulateQueue')
-    // if (isQueueEmpty) emptyQueueBox.classList.remove('displayNone')
-    // if (!isQueueEmpty) mainContent.classList.remove('displayNone')
-  }, 250)
-})
-
-quitButton.addEventListener('click', () => {
-  bridgeApi.invoke('openRequest', 'restartAll')
-})
-
 const addClickHandlers = () => {
   const listItems = document.getElementsByClassName('listItem')
   for (let i = 0; i < listItems.length; i++) {
@@ -116,8 +123,6 @@ const addClickHandlers = () => {
       let e = event.target.closest('.listItem')
       e = e.querySelector('.listTitleSmall').textContent
 
-      // e = e.childNodes[1].childNodes[3].childNodes[3].textContent
-      // console.log(e)
       bridgeApi.invoke('fsRequest', ['explore', e])
     }
     if (item.getAttributeNode('data-hasListener').value == 'false') {
@@ -133,8 +138,6 @@ const addClickHandlers = () => {
       event.stopPropagation()
       let e = event.target.closest('.listItem')
       let t = e.querySelector('.listTitleSmall').textContent
-      // console.log(e.getAttributeNode('data-id').value)
-      // e = e.childNodes[1].childNodes[3].childNodes[3].textContent
       bridgeApi.invoke('fsRequest', ['removeFromQueue', t])
       e.remove()
     }
@@ -150,9 +153,7 @@ const addClickHandlers = () => {
     const renameFolder = (event) => {
       event.stopPropagation()
       let e = event.target.closest('.listItem')
-      // console.log(e.getAttributeNode('data-id').value)
       e = e.querySelector('.listTitleSmall').textContent
-      // e = e.childNodes[1].childNodes[3].childNodes[3].textContent
 
       bridgeApi.invoke('fsRequest', ['rename', e])
     }
@@ -162,22 +163,6 @@ const addClickHandlers = () => {
     item.setAttribute('data-hasListener', 'true')
   }
 }
-addClickHandlers()
-
-// const removeDriveFromQueue = (event) => {
-//   // event.preventDefault()
-//   console.log('removeDriveFromQueue', event.target)
-// }
-// document.getElementById('removeFromQueueButton')
-//   .addEventListener('click', (event) => removeDriveFromQueue(event))
-
-// const renameFolder = (event) => {
-//   // event.preventDefault()
-//   console.log('renameFolder', event.target)
-// }
-// document.getElementById('renameButton')
-//   .addEventListener('click', (event) => renameFolder(event))
-
 
 const addToQueue = () => {
   bridgeApi.invoke('openRequest', 'selectDrive')
@@ -186,29 +171,79 @@ const addToQueue = () => {
     })
 }
 
-// document.querySelector('body').addEventListener('click', () => {
-//   console.log('cc')
-//   // document.querySelector('.svg-wrapper').setAttribute
-//   // document.querySelector('#svg-wrapper').classList.toggle('active')
-// })
-
-startButton.addEventListener('click', async (...args) => {
-  // startButton.disabled = true
-  // mainOptionsMenu.classList.add('displayNone')
-  // mainContent.classList.add('displayNone')
-  // logContent.classList.remove('displayNone')
-  mainContent.classList.add('shiftedToLeft')
-  mainOptionsMenu.classList.add('shiftedToLeft')
-  setTimeout(() => {
-    mainOptionsMenu.classList.add('displayNone')
-    mainContent.classList.add('displayNone')
-    logContent.classList.remove('displayNone')
-  }, 500)
-  res = await bridgeApi.invoke('openRequest', 'startOperation')
-})
-
 const sanitizeSlashes = (pathWithSlashes) => {
   return pathWithSlashes.replaceAll('\\', '//');
+}
+
+const setProgress = (args) => {
+  console.log('Progress ', args)
+  progressBar.value = args
+}
+
+const logPrint = (args) => {
+  logTextArea.textContent = logTextArea.textContent + args + '\n'
+  logTextArea.scrollTop = logTextArea.scrollHeight
+}
+
+const setTotalSubDirs = (args) => {
+  document
+    .querySelector('#totalSubDirs')
+    .innerHTML = `Subfolders detected (${args})`
+  bridgeApi.invoke('fsRequest', ['checkExistingData', null])
+
+}
+
+const setTotalDrives = (args) => {
+  if (args == 0) {
+    emptyQueueBox.classList.remove('displayNone')
+    mainContent.classList.add('displayNone')
+  } else {
+    emptyQueueBox.classList.add('displayNone')
+    mainContent.classList.remove('displayNone')
+  }
+  document
+    .querySelector('#totalDrives')
+    .innerHTML = `Folders to scan (${args})`
+}
+
+const setExistsIndicator = (args) => {
+  let dataID = document.querySelector(`[data-id="${sanitizeSlashes(args)}"]`)
+  let pass = dataID.querySelector('.folderPassed')
+  let fail = dataID.querySelector('.folderFailed')
+  pass.classList.remove('displayNone')
+  fail.classList.add('displayNone')
+}
+
+const previewPrint = (args) => {
+  let id = sanitizeSlashes(args[0])
+  let title = args[1]
+  let path = args[2]
+  let html = `
+          <div data-id="${id}" data-hasListener="false" class="listItem folderItem">
+            <span class="listTitle folderTitleBox">
+              <span class="material-symbols-rounded-large">subdirectory_arrow_right</span>
+              <span>
+                <div class="listTitleLarge">${title}</div>
+                <div class="listTitleSmall">${path}</div>
+              </span>
+            </span>
+            <div class="folderButtons">
+              <button id="" data-hasListener="false" class="listButton renameButton showOnHover">
+                <span class="material-symbols-rounded-tiny">bookmark_manager</span>
+              </button>
+              <button class="listButton folderPassed displayNone" title="Data exists already">
+                <span class="material-symbols-rounded-tiny">check</span>
+              </button>
+              <button class="listButton folderFailed"  title="Data does not exist">
+                <span class="material-symbols-rounded-tiny">close</span>
+              </button>
+            </div>
+          </div>
+            `
+  folderViewArea.insertAdjacentHTML('beforeend', html)
+  addClickHandlers()
+  // folderViewArea.textContent = folderViewArea.textContent + args + '\n'
+  // folderViewArea.scrollTop = folderViewArea.scrollHeight
 }
 
 bridgeApi.on('PROGRESS', (args) => setProgress(args))
@@ -223,12 +258,6 @@ bridgeApi.on('QUEUE_DRIVE', (args) => {
   let title = args[1]
   let path = args[2]
   if (!title) title = path
-  // let title = args[1]
-  // let path = args[0]
-  // if (title == '') {
-  //   title = path
-  //   path = ''
-  // }
   let html = `
           <div data-id="${id}" data-hasListener="false" class="listItem driveItem">
             <span class="listTitle driveTitleBox">
@@ -277,94 +306,3 @@ const affectDOM = (args) => {
     bridgeApi.invoke('hereIsTheLog', logTextArea.textContent)
   }
 }
-
-const setProgress = (args) => {
-  console.log('Progress ', args)
-  progressBar.value = args
-}
-
-const logPrint = (args) => {
-  // console.log(args)
-  logTextArea.textContent = logTextArea.textContent + args + '\n'
-  logTextArea.scrollTop = logTextArea.scrollHeight
-}
-
-const setTotalSubDirs = (args) => {
-  document
-    .querySelector('#totalSubDirs')
-    .innerHTML = `Subfolders detected (${args})`
-  bridgeApi.invoke('fsRequest', ['checkExistingData', null])
-
-}
-
-const setTotalDrives = (args) => {
-  if (args == 0) {
-    emptyQueueBox.classList.remove('displayNone')
-    mainContent.classList.add('displayNone')
-  } else {
-    emptyQueueBox.classList.add('displayNone')
-    mainContent.classList.remove('displayNone')
-  }
-  document
-    .querySelector('#totalDrives')
-    .innerHTML = `Folders to scan (${args})`
-}
-
-
-const setExistsIndicator = (args) => {
-  let dataID = document.querySelector(`[data-id="${sanitizeSlashes(args)}"]`)
-  let pass = dataID.querySelector('.folderPassed')
-  let fail = dataID.querySelector('.folderFailed')
-  pass.classList.remove('displayNone')
-  fail.classList.add('displayNone')
-}
-
-const previewPrint = (args) => {
-  let id = sanitizeSlashes(args[0])
-  let title = args[1]
-  let path = args[2]
-  // if (title == '') {
-  //   title = path
-  // }
-  let html = `
-          <div data-id="${id}" data-hasListener="false" class="listItem folderItem">
-            <span class="listTitle folderTitleBox">
-              <span class="material-symbols-rounded-large">subdirectory_arrow_right</span>
-              <span>
-                <div class="listTitleLarge">${title}</div>
-                <div class="listTitleSmall">${path}</div>
-              </span>
-            </span>
-            <div class="folderButtons">
-              <button id="" data-hasListener="false" class="listButton renameButton showOnHover">
-                <span class="material-symbols-rounded-tiny">bookmark_manager</span>
-              </button>
-              <button class="listButton folderPassed displayNone" title="Data exists already">
-                <span class="material-symbols-rounded-tiny">check</span>
-              </button>
-              <button class="listButton folderFailed"  title="Data does not exist">
-                <span class="material-symbols-rounded-tiny">close</span>
-              </button>
-            </div>
-          </div>
-            `
-  folderViewArea.insertAdjacentHTML('beforeend', html)
-  addClickHandlers()
-  // folderViewArea.textContent = folderViewArea.textContent + args + '\n'
-  // folderViewArea.scrollTop = folderViewArea.scrollHeight
-}
-
-addButton.addEventListener('click', addToQueue)
-// addButtonLarge.addEventListener('click', addToQueue)
-
-// const resetQueue = () => {
-//     // addButtonLarge.removeEventListener('click', addToQueue)
-//     driveViewArea.innerHTML = `
-//             <div id="addButtonLarge" class="listItem driveItem">
-//               <span class="listTitle">
-//                 <span class="material-symbols-rounded-large">add</span>
-//                 Add Game Drive</span>
-//             </div>`
-// }
-
-
