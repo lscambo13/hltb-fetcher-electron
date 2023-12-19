@@ -13,6 +13,7 @@ const logContent = document.querySelector('#logContent')
 
 const addButtonLarge = document.querySelector('#addButtonLarge')
 const startButton = document.querySelector('#startButton')
+const restartAppButton = document.querySelector('#restartAppButton')
 const clearButton = document.querySelector('#clearButton')
 const driveViewArea = document.querySelector('#driveViewArea')
 const folderViewArea = document.querySelector('#folderViewArea')
@@ -85,6 +86,10 @@ document.querySelectorAll('.checkbox').forEach((value) => {
 
 clearButton.addEventListener('click', () => {
   bridgeApi.invoke('openRequest', 'resetQueue')
+})
+
+restartAppButton.addEventListener('click', () => {
+  bridgeApi.invoke('openRequest', 'restartApp')
 })
 
 getStartedButton.addEventListener('click', () => {
@@ -199,9 +204,6 @@ startButton.addEventListener('click', async (...args) => {
     mainContent.classList.add('displayNone')
     logContent.classList.remove('displayNone')
   }, 500)
-
-
-
   res = await bridgeApi.invoke('openRequest', 'startOperation')
 })
 
@@ -251,27 +253,27 @@ const affectDOM = (args) => {
   if (args == 'enableStartButton') {
     startButton.disabled = false
   }
-  if (args == 'disableStartButton') {
+  else if (args == 'disableStartButton') {
     startButton.disabled = true
   }
-  if (args == 'enableAddButton') {
+  else if (args == 'enableAddButton') {
     addButton.disabled = false
   }
-  if (args == 'disableAddButton') {
+  else if (args == 'disableAddButton') {
     addButton.disabled = true
   }
-  if (args == 'clearBothLogBoxes') {
+  else if (args == 'clearBothLogBoxes') {
     driveViewArea.textContent = ''
     folderViewArea.textContent = ''
   }
-  if (args == 'clearLog') {
+  else if (args == 'clearLog') {
     driveViewArea.textContent = ''
     logTextArea.textContent = ''
   }
-  if (args == 'clearPreview') {
+  else if (args == 'clearPreview') {
     folderViewArea.textContent = ''
   }
-  if (args == 'requestLog') {
+  else if (args == 'requestLog') {
     bridgeApi.invoke('hereIsTheLog', logTextArea.textContent)
   }
 }

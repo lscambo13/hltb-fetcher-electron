@@ -348,16 +348,7 @@ label{
     border-radius: 6px;
 }
 
-.tinyButton{
-    width: 38px;
-    height: 36px;
-    /* padding: 0; */
-    text-align: center;
-    margin: 0;
-    padding-top: 4px;
-    padding-inline-end: 14px;
-    border-radius: 6px;
-}
+
 
 button{
     background-color: rgb(53, 53, 53);
@@ -381,6 +372,20 @@ button:active{
 
 button:disabled{
     opacity: 1;
+}
+
+.tinyButton{
+    width: 38px;
+    height: 36px;
+    text-align: center;
+    margin: 0;
+    padding-inline-end: 14px;
+    border-radius: 6px;
+}
+
+.flatButton{
+    background-color: rgba(53, 53, 53, 0);
+    border-width: 0px;
 }
 
 .listTitle{
@@ -519,8 +524,13 @@ input{
 label{
     vertical-align: middle
 }
-.placeholderText{
-font-size: x-large;
+
+.mainHeader{
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
 }
 
 .displayNone{

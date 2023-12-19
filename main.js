@@ -113,7 +113,8 @@ function sendMsg(msg, channel = 'LOG') {
 function unCamelCase(str) {
     let newStr = str.replace(/([a-z])([A-Z])|([A-Za-z])(\d+)/g, '$1$3 $2$4')
         .replace(/(\d+)([A-Za-z])/g, '$1 $2')
-        .replace(/([A-Z])(?=[A-Z][a-z])|(\d+)([A-Za-z])/g, '$1$2 $3');
+        .replace(/([A-Z])(?=[A-Z][a-z])|(\d+)([A-Za-z])/g, '$1$2 $3')
+        .replace(/-/g, ' ');
     // newStr.replace(/([A-Za-z])(\d)/g, '$1 $2');
     if (newStr != str) {
         sendMsg(`Name Error: Converting '${str}' to '${newStr}'`, 'LOG')
@@ -214,13 +215,13 @@ const saveInfo = (info, coverArt, address) => {
     }
 
     if (downloadCoverArts) {
-        const img = path.join(address, 'poster.jpg');
+        const img = path.join(address, 'coverArt.jpg');
         const fileAddress = fs.createWriteStream(img);
         stream.Readable.fromWeb(coverArt.body)
             .pipe(fileAddress);
         fileAddress.on('finish', () => {
             fileAddress.close();
-            console.log('Download Completed');
+            // console.log('Download Completed');
         })
     }
 
@@ -237,41 +238,39 @@ const saveInfo = (info, coverArt, address) => {
 
 let searchPromises = []
 const getGameDetail = () => {
-    const preSaveProcess = (gameCover) => {
+    const preSaveProcess = () => {
         Promise.all(searchPromises).then((gameDetails) => {
             sendMsg(` `, 'LOG')
-            // sendMsg(`Fetch complete`, 'LOG')
-            // console.log(`all promises fulfilled`)
             gameDetails.forEach((val, index, array) => {
-                // sendMsg(`LOG: ${val.name}`, 'LOG')
                 counterGamesFound++
                 ++gamesScanned
-                // passedGames.push(folder)
-                // passedGameDir.push(dir)
                 sendMsg(`Processing: ${val.name}`, 'LOG')
                 sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
                 saveInfo(val, gameCovers[index], path.join(fullGamePaths[index], '/HowLongToBeat-Stats'))
-                // sendMsg(++currentProgress, 'PROGRESS')
             })
             sendMsg(` `, 'LOG')
             failedGames.forEach((val, index, array) => {
                 sendMsg(`Processing: ${val}`, 'LOG')
                 sendMsg(`Failed: Check if the game folder name is spelled correctly`, 'LOG')
-                // sendMsg(`Saving to ${path.join(fullGamePaths[index], '/HowLongToBeat-Stats')}`, 'LOG')
             })
             sendMsg(++currentProgress, 'PROGRESS')
             log()
         }).catch((error) => {
             sendMsg(error, 'LOG')
             log()
-            // console.log(`resolve promises error`, error)
         })
     }
-
-    Promise.all(fetchCoverPromises).then((res) => {
-        res.forEach((val) => gameCovers.push(val))
+    if (downloadCoverArts) {
+        sendMsg(`Waiting for all cover images to download`, 'LOG')
+        Promise.all(fetchCoverPromises).then((res) => {
+            res.forEach((val) => gameCovers.push(val))
+            sendMsg(++currentProgress, 'PROGRESS')
+            preSaveProcess()
+        })
+    } else {
+        sendMsg(++currentProgress, 'PROGRESS')
         preSaveProcess()
-    })
+    }
 
 }
 
@@ -404,16 +403,16 @@ const queueDrives = (pathToDrive) => {
     sendMsg([pathToDrive, path.basename(pathToDrive), pathToDrive], 'QUEUE_DRIVE')
 }
 
-const restartAll = () => {
+const restartApp = () => {
     resetQueues()
+    app.relaunch()
     app.quit()
 }
 
 const autoPopulateQueue = () => {
-    const popularLocations = [
+    let popularLocations = [
         `F:\\Games`,
         `E:\\Games`,
-        `D:\\projects\\hltb-fetcher-electron\\test`,
         `D:\\Games`,
         `C:\\Games`,
         `C:\\Riot Games`,
@@ -422,6 +421,7 @@ const autoPopulateQueue = () => {
         `C:\\Program Files(x86)\\GOG Galaxy\\Games`,
         `C:\\Program Files (x86)\\Steam\\steamapps\\common`
     ]
+    if (isDev) popularLocations = [`D:\\projects\\hltb-fetcher-electron\\test`,]
     popularLocations.forEach((val) => {
         val = path.join(val)
         if (fs.existsSync(val)) {
@@ -453,10 +453,10 @@ ipcMain.handle('openRequest', (event, ...args) => {
             })
         });
     }
-    if (args == 'startOperation') startOnlineScan()
-    if (args == 'restartAll') restartAll()
-    if (args == 'resetQueue') resetQueues()
-    if (args == 'autoPopulateQueue') autoPopulateQueue()
+    else if (args == 'startOperation') startOnlineScan()
+    else if (args == 'resetQueue') resetQueues()
+    else if (args == 'autoPopulateQueue') autoPopulateQueue()
+    else if (args == 'restartApp') restartApp()
     return out
 })
 
@@ -475,24 +475,24 @@ ipcMain.handle('fsRequest', (event, args) => {
         shell.openExternal(path.join(msg))
         // console.log('exploring', msg)
     }
-    if (cmd == 'rename') {
+    else if (cmd == 'rename') {
         console.log('renaming', msg)
     }
-    if (cmd == 'removeFromQueue') {
+    else if (cmd == 'removeFromQueue') {
         driveQueueSet.delete(path.join(msg))
         subDirectoriesSet.clear()
         readQueue()
         // console.log('removing', msg, driveQueueSet)
         checkExistingDataInSubDirs()
     }
-    if (cmd == 'checkExistingData') {
+    else if (cmd == 'checkExistingData') {
         checkExistingDataInSubDirs();
     }
-    if (cmd == 'forceOverwrite') {
+    else if (cmd == 'forceOverwrite') {
         forceOverwrite = msg
         console.log('overwriting', forceOverwrite)
     }
-    if (cmd == 'downloadCoverArts') {
+    else if (cmd == 'downloadCoverArts') {
         downloadCoverArts = msg
         console.log('download coverArt', downloadCoverArts)
     }
