@@ -1808,6 +1808,7 @@ node_modules/unixify/README.md
 node_modules/watchboy/index.js
 node_modules/watchboy/package.json
 node_modules/watchboy/README.md
+test/
 test/grand theft auto iv/gg (1).css
 test/grand theft auto iv/preload.js
 test/grand theft auto iv episodes from liberty city/gg (2).js
@@ -10410,16 +10411,3 @@ out/make/squirrel.windows/x64/HLTB Fetcher-1.0.0 Setup.exe
 out/make/squirrel.windows/x64/hltb_fetcher_electron-1.0.0-full.nupkg
 out/make/squirrel.windows/x64/RELEASES
 node_modules/electron-winstaller/vendor/Squirrel-Releasify.log
-test/Cyberpunk2077PhantomLiberty/HowLongToBeat-Stats/Completionist - 30 hours - Cyberpunk 2077 Phantom Liberty.txt
-test/Cyberpunk2077PhantomLiberty/HowLongToBeat-Stats/Main & Sides - 22 hours - Cyberpunk 2077 Phantom Liberty.txt
-test/Cyberpunk2077PhantomLiberty/HowLongToBeat-Stats/Main Story - 13 hours - Cyberpunk 2077 Phantom Liberty.txt
-test/AssassinsCreedIVBlackFlag/HowLongToBeat-Stats/Assassins_Creed_IV_-_Black_Flag_cover.jpg
-test/Cyberpunk2077PhantomLiberty/HowLongToBeat-Stats/113203_Cyberpunk_2077_Phantom_Liberty.jpg
-test/Guardians of the Galaxy/HowLongToBeat-Stats/72584_Marvels_Guardians_of_the_Galaxy.jpg
-test/High on Life/HowLongToBeat-Stats/109245_High_On_Life.jpg
-test/HighLife/HowLongToBeat-Stats/109245_High_On_Life.jpg
-test/MafiaIIDefinitiveEdition/HowLongToBeat-Stats/78142_Mafia_II_Definitive_Edition.jpg
-test/gta iv complete edition/HowLongToBeat-Stats/GrandTheftAutoIVTheCompleteEdition.jpg
-test/spider-man remastered/HowLongToBeat-Stats/70093_Marvels_Spider-Man_Game_of_the_Year_Edition.jpg
-test/spider-man remastered/HowLongToBeat-Stats/Main & Sides - 29 hours - Marvel's Spider-Man Game of the Year Edition.txt
-test/todo today/HowLongToBeat-Stats/71445_TODO_today.jpg
