@@ -16,26 +16,42 @@
 			  script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net" />
 		<link rel="stylesheet" href="style.css">
 		<link rel="stylesheet" href="finalReport.css">
-		<!-- <link rel="stylesheet" href="svg-animation.css"> -->
-		<!-- <script src="./assets/chart.umd.min.js"></script> -->
-		<!-- <script src="./assets/jquery.min.js"></script> -->
-		<!-- <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /> -->
 		<title>HowLongToBeat Stats Fetcher</title>
 	</head>
 
-	<body>
-		<div class="mainHeader">
+	<body class="displayNone">
+		<div class="mainHeader bottomMargin">
 			<h1>HowLongToBeat Stats Fetcher!</h1>
 			<button class="tinyButton flatButton material-symbols-rounded-button"
-					id="restartAppButton">
-				restart_alt
+					id="restartAppButton">restart_alt
 			</button>
 		</div>
-		<canvas id="myChart"></canvas>
+
+		<div class="mainContent bottomMargin">
+			<h2 class="mainContentLabel">Games Library</h2>
+			<div class="cardGallery"></div>
+		</div>
+
+		<div class="mainContent">
+			<h2 class="mainContentLabel">All Graphs</h2>
+			<div class="canvasContainer">
+				<canvas id="allGameTimesLineGraph" aria-label="all GameTimes Line Graph"
+						role="img"></canvas>
+			</div>
+			<div class="canvasContainer">
+				<canvas id="allGameTimesBarGraph" aria-label="all GameTimes Bar Graph"
+						role="img"></canvas>
+			</div>
+
+			<div class="canvasContainer displayNone">
+				<canvas id="allGameTimesPieChart" aria-label="all GameTimes Pie Chart"
+						role="img"></canvas>
+			</div>
+		</div>
+
 
 	</body>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+	<script src="./assets/Chart.js"></script>
 	<script type="module" src="./finalReport.js"></script>
 
 </html>

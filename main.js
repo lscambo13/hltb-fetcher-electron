@@ -100,7 +100,6 @@ function createFinalReportWindow() {
     // Child window loads settings.html file 
     finalReportWindow.loadFile(path.join(__dirname, 'renderer/finalReport.html'))
     if (isDev) finalReportWindow.webContents.openDevTools()
-    // finalReportWindow.loadFile("finalReport.html");
     finalReportWindow.once("ready-to-show", () => {
         finalReportWindow.show();
     });
@@ -150,7 +149,6 @@ const giveMeTime = () => {
 
 const logToDisk = (code) => {
     sendMsg('Generating consolidated report', 'LOG')
-
     let saveDir = path.join(process.env.HOME, `HLTB_Fetcher/`)
     if (!fs.existsSync(saveDir)) {
         fs.mkdirSync(saveDir)
@@ -158,15 +156,19 @@ const logToDisk = (code) => {
     }
     saveDir = path.join(saveDir, giveMeTime())
     fs.mkdirSync(saveDir)
-    sendMsg(`Saving report to ${saveDir}`, 'LOG')
-
-    let finalReport = path.join(saveDir, `/report.json`)
+    let assetDir = path.join(saveDir, 'assets/')
+    sendMsg(`Saving database to ${assetDir}`, 'LOG')
+    fs.mkdirSync(assetDir)
+    let finalReport = path.join(assetDir, `/database.json`)
     fs.writeFileSync(finalReport,
         JSON.stringify(allGames)
     )
-    sendMsg(`Saved final report: ${finalReport}`, 'LOG')
-
+    sendMsg(`Saved final database: ${finalReport}`, 'LOG')
     finalLogPath = path.join(saveDir, `/log.log`)
+
+    // sendMsg(`Copying required files`, 'LOG')
+    // fs.copyFile("example_file.txt", "copied_file.txt",)
+
     sendMsg(`requestLog`, 'DOM')
     if (code == 0) sendMsg(++currentProgress, 'PROGRESS')
 }
@@ -443,7 +445,8 @@ ipcMain.handle('endGameRequest', (event, ...args) => {
         console.log('incoming')
         let x
         if (isDev) {
-            x = require(path.join(process.env.HOME, '/HLTB_Fetcher/ok/report.json'))
+            x = require(path.join(process.env.HOME, '/HLTB_Fetcher/ok/database.json'))
+            if (allGames) x = allGames
         } else x = allGames
         finalReportWindow.webContents.send('ALL_GAMES', x)
     }

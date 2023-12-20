@@ -1,12 +1,157 @@
 
-/* :root {
-  color-scheme: dark;
-  background-color: #1A1A1A;
+:root {
+  color-scheme: light;
+  background-color: hsl(0, 0%, 96%);
   padding: 20px;
   box-sizing: border-box;
   cursor: default;
-} */
-/* #myChart{
-	width:100%;
-	max-width:700px
-} */
+}
+
+.mainContent{
+  border: 1px solid rgba(128, 128, 128, 0.25);
+  border-radius: 16px;
+}
+
+.bottomMargin{
+  margin-bottom: 40px;
+}
+
+.mainContentLabel{
+  background-color: hsl(0, 0%, 96%);
+    width: max-content;
+    margin: 0;
+    padding-inline: 16px;
+    margin-top: -16px;
+    padding-bottom: 0;
+    transform: translateY(0px) translateX(40px);
+}
+
+p{
+  padding: 0;
+  margin: 0;
+}
+
+.canvasContainer{
+  max-height: 500px;
+  /* width: 1920px; */
+}
+
+.cardGallery{
+  font-size: 20px;
+  flex-wrap: wrap;
+  /* height: max-content; */
+  justify-content: space-evenly;
+  display: flex;
+  padding: 25px;
+  overflow: hidden;
+  box-sizing: border-box;
+  gap: 1em;
+}
+
+.cardContainer{
+  display: flex;
+    width: 20em;
+    /* height: 8em; */
+    /* max-width: 18em; */
+    /* max-height: 8em; */
+    justify-content: space-between;
+    overflow: hidden;
+    background-color: hsl(40, 100%, 99%);
+    box-shadow: rgba(0, 0, 0, 0.4) 0 0px 0px 0px;
+    /* box-shadow: inset white 0 0 6px 0px; */
+    border: 1px solid lightgrey;
+    border-radius: 6px;
+    transition: 100ms;
+}
+
+.cardContainer:hover{
+    box-shadow: rgba(0, 0, 0, 0.4) 0 4px 6px 0px;
+    transform: translateY(-6px);
+    /* scale: 1.005; */
+    /* overflow: hidden; */
+    border: 1px solid rgba(255, 166, 0, 0.5);
+}
+
+.cardContainer:active{
+    box-shadow: rgba(0, 0, 0, 0.4) 0 0px 0px 0px;
+    transform: translateY(0px);
+    /* scale: 1.005; */
+    /* overflow: hidden; */
+}
+
+.cardImage{
+  width: 6em;
+  /* height: 8em; */
+  /* max-width: 6em;
+  max-height: 8em; */
+  margin: 0.25em;
+  border-radius: 4px;
+  /* background-color: gold; */
+  box-sizing: border-box;
+
+}
+
+.cardData{
+  width: 12em;
+  height: 8em;
+    max-width: 12em;
+    max-height: 8em;
+  /* background-color: antiquewhite; */
+}
+.cardTitle{
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    width: 11em;
+    height: 3em;
+    line-height: 1.5em;
+    overflow: hidden;
+    text-align: end;
+    margin: 0.75em 0.25em 0.75em 0.375em;
+    /* font-weight: 500; */
+    /* border: 1px solid red; */
+}
+.cardTimesContainer{
+  display: inline-flex;
+  width: 12em;
+  height: 4em;
+    max-width: 12em;
+    max-height: 4em;
+      justify-content: space-around;
+    align-items: center;
+  /* border: 1px solid red; */
+}
+
+
+.cardTimesContainer>div{
+  display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+.cardTime{
+  display: flex;
+  flex-direction: column;
+      align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+  font-weight: 500;
+  width: 3em;
+  height: 3em;
+  max-width: 3em;
+  max-height: 3em;
+  border-radius: 50%;
+    overflow: hidden;
+    /* background-color: hwb(50 30% 0% / 0.75); */
+  border: 1px solid orange;
+}
+.timeUnit{
+  font-size: xx-small;
+}
+.timeLabel{
+  font-size: xx-small;
+  font-weight: 600;
+}
+.timeFraction{
+    font-size: small;
+}
