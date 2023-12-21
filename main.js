@@ -446,7 +446,7 @@ ipcMain.handle('endGameRequest', (event, ...args) => {
         let x
         if (isDev) {
             x = require(path.join(process.env.HOME, '/HLTB_Fetcher/ok/database.json'))
-            if (allGames) x = allGames
+            if (allGames.length) x = allGames
         } else x = allGames
         finalReportWindow.webContents.send('ALL_GAMES', x)
     }
