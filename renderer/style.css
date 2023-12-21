@@ -314,6 +314,7 @@ button:active{
 }
 
 button:disabled{
+    pointer-events: none;
     opacity: 1;
 }
 
@@ -322,7 +323,6 @@ button:disabled{
     height: 36px;
     text-align: center;
     margin: 0;
-    padding-inline-end: 14px;
     border-radius: 6px;
 }
 
