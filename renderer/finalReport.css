@@ -7,9 +7,28 @@
   cursor: default;
 }
 
-.mainContent{
+.mainContentContainer{
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+    justify-content: center;
+}
+
+.roundBorderBox{
   border: 1px solid rgba(128, 128, 128, 0.25);
   border-radius: 16px;
+}
+
+.wideWidth{
+  width: 920px;
+  min-width: 600px;
+  max-width: 920px;
+}
+
+.narrowWidth{
+  width: 300px;
+  min-width: 200px;
+  max-width: 300px;
 }
 
 .bottomMargin{
@@ -20,10 +39,10 @@
   background-color: hsl(0, 0%, 96%);
     width: max-content;
     margin: 0;
-    padding-inline: 16px;
+    padding-inline: 12px;
     margin-top: -16px;
     padding-bottom: 0;
-    transform: translateY(0px) translateX(40px);
+    transform: translateY(0px) translateX(20px);
 }
 
 p{
@@ -32,7 +51,7 @@ p{
 }
 
 .canvasContainer{
-  max-height: 500px;
+  /* max-height: 500px; */
   /* width: 1920px; */
 }
 
@@ -50,67 +69,92 @@ p{
 
 .cardContainer{
   display: flex;
-    width: 20em;
     /* height: 8em; */
     /* max-width: 18em; */
     /* max-height: 8em; */
     justify-content: space-between;
     overflow: hidden;
     background-color: hsl(40, 100%, 99%);
-    box-shadow: rgba(0, 0, 0, 0.4) 0 0px 0px 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px;
     /* box-shadow: inset white 0 0 6px 0px; */
     border: 1px solid lightgrey;
     border-radius: 6px;
-    transition: 100ms;
+    transition: 150ms;
+}
+
+.cardContainerGrid{
+    width: 19em;
+}
+.cardContainerList{
+    width: 100%;
 }
 
 .cardContainer:hover{
-    box-shadow: rgba(0, 0, 0, 0.4) 0 4px 6px 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 4px 6px 0px;
     transform: translateY(-6px);
-    /* scale: 1.005; */
-    /* overflow: hidden; */
     border: 1px solid rgba(255, 166, 0, 0.5);
 }
 
 .cardContainer:active{
-    box-shadow: rgba(0, 0, 0, 0.4) 0 0px 0px 0px;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px;
     transform: translateY(0px);
-    /* scale: 1.005; */
-    /* overflow: hidden; */
 }
 
 .cardImage{
-  width: 6em;
-  /* height: 8em; */
-  /* max-width: 6em;
-  max-height: 8em; */
   margin: 0.25em;
   border-radius: 4px;
-  /* background-color: gold; */
   box-sizing: border-box;
+    transition: 300ms;
+}
 
+.cardImageGrid{
+  width: 6em;
+}
+
+.cardImageList{
+    height: 4em;
+    width: 2.75em;
+    object-fit: cover;
 }
 
 .cardData{
+    max-height: 8em;
+}
+
+.cardDataGrid{
   width: 12em;
   height: 8em;
-    max-width: 12em;
-    max-height: 8em;
-  /* background-color: antiquewhite; */
 }
+
+.cardDataList{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .cardTitle{
     display: flex;
-    align-items: center;
     justify-content: end;
-    width: 11em;
     height: 3em;
     line-height: 1.5em;
     overflow: hidden;
-    text-align: end;
     margin: 0.75em 0.25em 0.75em 0.375em;
     /* font-weight: 500; */
     /* border: 1px solid red; */
 }
+
+.cardTitleGrid{
+    width: 11em;
+    text-align: end;
+}
+
+.cardTitleList{
+    align-items: center;
+    text-align: start;
+}
+
+
 .cardTimesContainer{
   display: inline-flex;
   width: 12em;
@@ -136,22 +180,75 @@ p{
     justify-content: center;
     margin-bottom: 4px;
   font-weight: 500;
-  width: 3em;
-  height: 3em;
-  max-width: 3em;
-  max-height: 3em;
+
+  /* max-width: 3em;
+  max-height: 3em; */
   border-radius: 50%;
     overflow: hidden;
     /* background-color: hwb(50 30% 0% / 0.75); */
-  border: 1px solid orange;
+  border: 2px solid rgba(255, 166, 0, 0.5);
+  transition: 100ms;
 }
+
+.cardTime:hover{
+  border: 2px solid rgba(255, 166, 0, 0.875);
+}
+
+.problem{
+  border: 2px solid rgba(255, 0, 0, 0.5);
+}
+
+.problem:hover{
+  border: 2px solid rgba(255, 0, 0, 0.875);
+}
+
+.cardTimeGrid{
+  width: 3em;
+  height: 3em;
+}
+
+.cardTimeList{
+  width: 2.5em;
+  height: 2.5em;
+}
+
 .timeUnit{
   font-size: xx-small;
 }
+
+.timeUnitGrid{
+  display: block;
+}
+
+.timeUnitList{
+  display: none;
+}
+
 .timeLabel{
   font-size: xx-small;
   font-weight: 600;
 }
 .timeFraction{
     font-size: small;
+}
+
+.viewStyleButtonBar{
+display: flex;
+    /* width: 100%; */
+    gap: 0.25em;
+    padding-inline-end: 1em;
+    justify-content: flex-end;
+}
+
+.sideListItems{
+/* text-align-last: justify; */
+}
+
+button{
+    background-color: rgb(235, 235, 235);
+    border-color: rgb(211, 211, 211);
+}
+
+button:hover{
+    background-color: rgb(245, 245, 245);
 }

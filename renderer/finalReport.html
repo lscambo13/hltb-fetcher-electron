@@ -27,12 +27,46 @@
 			</button>
 		</div>
 
-		<div class="mainContent bottomMargin">
-			<h2 class="mainContentLabel">Games Library</h2>
-			<div class="cardGallery"></div>
+		<div class="mainContentContainer">
+			<div class="roundBorderBox wideWidth bottomMargin">
+				<h2 class="mainContentLabel">Games Library</h2>
+				<div class="viewStyleButtonBar">
+					<button class="tinyButton" id="gridViewButton">
+						<span class="material-symbols-rounded-tiny">grid_on</span>
+					</button>
+					<button class="tinyButton" id="listViewButton">
+						<span class="material-symbols-rounded-tiny">view_list</span>
+					</button>
+				</div>
+				<div class="cardGallery"></div>
+			</div>
+			<div class="roundBorderBox narrowWidth bottomMargin">
+				<h2 class="mainContentLabel">Library Info</h2>
+				<div>
+					<h4>Top -- titles</h4>
+					<ol id="topLongestList">
+					</ol>
+				</div>
+				<!-- <h4>Top five shortest titles</h4>
+				<ol>
+					<li>hdik</li>
+					<li>hdik</li>
+					<li>hdik</li>
+					<li>hdik</li>
+					<li>hdik</li>
+				</ol>
+				<h4>Some facts</h4>
+				<ul>
+					<li>hdik</li>
+					<li>hdik</li>
+					<li>hdik</li>
+					<li>hdik</li>
+					<li>hdik</li>
+				</ul> -->
+			</div>
 		</div>
 
-		<div class="mainContent">
+		<div class="roundBorderBox">
 			<h2 class="mainContentLabel">All Graphs</h2>
 			<div class="canvasContainer">
 				<canvas id="allGameTimesLineGraph" aria-label="all GameTimes Line Graph"
