@@ -14,12 +14,14 @@
 			  style-src-elem 'self''unsafe-inline'https://fonts.googleapis.com; 
 			  font-src 'self' https://fonts.gstatic.com; 
 			  script-src 'self' https://ajax.googleapis.com https://cdnjs.cloudflare.com https://cdn.jsdelivr.net" />
+		<!-- <link rel="stylesheet" href="./assets/bootstrap.min.css"> -->
 		<link rel="stylesheet" href="style.css">
 		<link rel="stylesheet" href="finalReport.css">
 		<title>HowLongToBeat Stats Fetcher</title>
 	</head>
 
 	<body class="displayNone">
+
 		<div class="mainHeader bottomMargin">
 			<h1>HowLongToBeat Stats Fetcher!</h1>
 			<button class="tinyButton flatButton material-symbols-rounded-button"
@@ -28,6 +30,23 @@
 		</div>
 
 		<div class="mainContentContainer">
+			<div class="roundBorderBox narrowWidth bottomMargin">
+				<h2 class="mainContentLabel">Library Info</h2>
+				<div class="sidePanelContainer">
+					<ol class="sidePanelInnerBlock" id="longestTopMainOnly">
+					</ol>
+					<ol class="sidePanelInnerBlock" id="shortestTopMainOnly">
+					</ol>
+					<ol class="sidePanelInnerBlock" id="longestTopMainAndSides">
+					</ol>
+					<ol class="sidePanelInnerBlock" id="shortestTopMainAndSides">
+					</ol>
+					<ol class="sidePanelInnerBlock" id="longestTopComplete">
+					</ol>
+					<ol class="sidePanelInnerBlock" id="shortestTopComplete">
+					</ol>
+				</div>
+			</div>
 			<div class="roundBorderBox wideWidth bottomMargin">
 				<h2 class="mainContentLabel">Games Library</h2>
 				<div class="viewStyleButtonBar">
@@ -39,30 +58,6 @@
 					</button>
 				</div>
 				<div class="cardGallery"></div>
-			</div>
-			<div class="roundBorderBox narrowWidth bottomMargin">
-				<h2 class="mainContentLabel">Library Info</h2>
-				<div>
-					<h4>Top -- titles</h4>
-					<ol id="topLongestList">
-					</ol>
-				</div>
-				<!-- <h4>Top five shortest titles</h4>
-				<ol>
-					<li>hdik</li>
-					<li>hdik</li>
-					<li>hdik</li>
-					<li>hdik</li>
-					<li>hdik</li>
-				</ol>
-				<h4>Some facts</h4>
-				<ul>
-					<li>hdik</li>
-					<li>hdik</li>
-					<li>hdik</li>
-					<li>hdik</li>
-					<li>hdik</li>
-				</ul> -->
 			</div>
 		</div>
 
@@ -86,6 +81,7 @@
 
 	</body>
 	<script src="./assets/Chart.js"></script>
+	<!-- <script src="./assets/bootstrap.bundle.min.js"></script> -->
 	<script type="module" src="./finalReport.js"></script>
 
 </html>

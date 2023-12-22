@@ -9,8 +9,9 @@ let mainOnly = []
 let mainAndSides = []
 let complete = []
 let gameArts = []
+let gameIds = []
 
-const createCard = (img, title, times) => {
+const createCard = (id, img, title, times) => {
 	let t = [...times]
 	let red = ['ok', 'ok', 'ok']
 	t.forEach((e, i) => {
@@ -23,7 +24,7 @@ const createCard = (img, title, times) => {
 	})
 
 	cardGallery.insertAdjacentHTML("beforeend", `
-				<div class="cardContainer">
+				<div data-ID="${id}" class="cardContainer">
 				<img class="cardImage"
 					 src="${img}" alt="">
 				<div class="cardData">
@@ -177,21 +178,73 @@ const generateSortedArrays = (unorderedArray, order) => {
 	return x
 }
 
-const getTopTen = (arrayOfArrays) => {
-	let list = document.querySelector('#topLongestList')
+const fillTopFiveLists = (arrayOfArrays, length) => {
+	let mainList = document.querySelector(`#${length}TopMainOnly`)
+	let mainSidesList = document.querySelector(`#${length}TopMainAndSides`)
+	let completeList = document.querySelector(`#${length}TopComplete`)
+	let list;
+
 	arrayOfArrays.forEach((element, arrIndex) => {
-		console.log('-----Looking at ', arrIndex)
-		let totalTries = 10
+		if (arrIndex == 0) {
+			list = mainList
+			list.insertAdjacentHTML('afterbegin', `
+						<h3>Top ${length} games in your library, based on the main story</h3>
+				`)
+		} else if (arrIndex == 1) {
+			list = mainSidesList
+			list.insertAdjacentHTML('afterbegin', `
+						<h3>Top ${length} games in your library, based on story and some side activities</h3>
+				`)
+		} else if (arrIndex == 2) {
+			list = completeList
+			list.insertAdjacentHTML('afterbegin', `
+						<h3>Top ${length} games in your library, based on 100% completion</h3>
+				`)
+		}
+		{/* <span class="timeUnit">${element[i].gameTimes[arrIndex]}</span> */ }
+		console.log('-----Looking at ', list)
+		let totalTries = 5
+		let serialNo = 1
 		for (let i = 0; i < totalTries; i++) {
 			if (element[i].gameTimes[arrIndex]) {
-				list.insertAdjacentHTML("beforeend", `
-						<li class="sideListItems">${element[i].gameName}</li>
-						<span class="timeUnit">${element[i].gameTimes[arrIndex]}</span>
+				list.insertAdjacentHTML('beforeend', `
+						<div data-REF="${element[i].gameId}" class="sidePanelListItem">
+							<span>${serialNo}. ${element[i].gameName}</span>
+							<span>${element[i].gameTimes[arrIndex]}<span class="timeUnitBig"> hours</span></span>
+						</div>
 				`)
+				serialNo++
 				// console.log(element[i].gameName, element[i].gameTimes[arrIndex])
 			} else { totalTries++ }
 		}
 	})
+}
+
+const createBigCardModal = (element) => {
+	element = element
+		.replaceAll('cardContainerGrid', 'cardContainerBig').replaceAll('cardContainerList', 'cardContainerBig')
+		.replaceAll('cardImageGrid', 'cardImageBig').replaceAll('cardImageList', 'cardImageBig')
+		.replaceAll('cardDataGrid', 'cardDataBig').replaceAll('cardDataList', 'cardDataBig')
+		.replaceAll('cardTitleGrid', 'cardTitleBig').replaceAll('cardTitleList', 'cardTitleBig')
+		.replaceAll('cardTimeGrid', 'cardTimeBig').replaceAll('cardTimeList', 'cardTimeBig')
+		.replaceAll('timeUnitGrid', 'timeUnitBig').replaceAll('timeUnitList', 'timeUnitBig')
+		.replace('cardContainer', '')
+
+	document.body.insertAdjacentHTML('afterbegin', `
+		<div class="modalContainer">
+			<div class="modalButtonBar"></div>
+			<div class="bigCardContainer" id="bigCardContainer">
+				${element}
+			</div>
+		</div>
+	`)
+
+	let modalContainer = document.querySelector('.modalContainer')
+	const removeBigCardModal = () => {
+		modalContainer.removeEventListener('click', removeBigCardModal)
+		modalContainer.remove()
+	}
+	modalContainer.addEventListener('click', removeBigCardModal)
 }
 
 const beginConstructingDOM = (database) => {
@@ -205,6 +258,7 @@ const beginConstructingDOM = (database) => {
 		let img = element.gameDir + '\\coverArt.jpg'
 		let title = element.gameName
 		let times = element.gameTimes
+		let id = element.gameId
 		gameLabels.push(title)
 		gameDirs.push(element.gameDir)
 		coverBlobs.push(img)
@@ -212,13 +266,45 @@ const beginConstructingDOM = (database) => {
 		mainAndSides.push(times[1])
 		complete.push(times[2])
 		gameArts.push(element.coverUrl)
-		createCard(img, title, times)
+		gameIds.push(id)
+		createCard(id, img, title, times)
 	});
 	addGridStyle()
 
+	let imgTags = document.querySelectorAll('img')
+	imgTags.forEach(e => e.onerror = () => {
+		e.src = './assets/not_found.jpg'
+	})
+
 	const ascSortedArrays = generateSortedArrays(asciiOrderedDB, 'asc')
 	const descSortedArrays = generateSortedArrays(asciiOrderedDB, 'desc')
-	getTopTen(descSortedArrays)
+	fillTopFiveLists(descSortedArrays, 'longest')
+	fillTopFiveLists(ascSortedArrays, 'shortest')
+
+	const cardContainer = document.querySelectorAll('.cardContainer')
+	cardContainer.forEach((element) => {
+		element.addEventListener('click', (e) => {
+			e.stopPropagation()
+			let x = e.target.closest('.cardContainer').outerHTML
+			createBigCardModal(x)
+		})
+	})
+
+	let dataREFs = document.querySelectorAll('[data-REF]')
+	console.log(dataREFs)
+	dataREFs.forEach((element) => {
+		element.addEventListener('click', (event) => {
+			let refId = event.target
+				.closest('.sidePanelListItem')
+				.getAttribute('data-REF')
+			console.log(refId)
+			let dataID = document.querySelector(`[data-ID="${refId}"]`)
+			let x = dataID.outerHTML
+			console.log(x)
+			createBigCardModal(x)
+		})
+	})
+
 
 	let allGameTimesLineGraphCFG = {
 		type: 'line',
