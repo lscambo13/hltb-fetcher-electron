@@ -13,11 +13,12 @@ let forceOverwrite = true;
 let downloadCoverArts = true;
 let currentProgress;
 class GameObject {
-    constructor(name, dir, mainTime, extraTime, completeTime, url) {
+    constructor(name, dir, mainTime, extraTime, completeTime, url, id) {
         this.gameName = name,
             this.gameDir = dir,
             this.gameTimes = [mainTime, extraTime, completeTime],
-            this.coverUrl = url
+            this.coverUrl = url,
+            this.gameId = id
     }
 }
 let gameCovers = []
@@ -84,6 +85,8 @@ function createFinalReportWindow() {
     finalReportWindow = new BrowserWindow({
         width: isDev ? 1440 : 1024,
         height: 700,
+        minWidth: 1024,
+        minHeight: 400,
         modal: true,
         show: false,
         parent: mainWin, // Make sure to add parent window here 
@@ -163,6 +166,8 @@ const logToDisk = (code) => {
     fs.writeFileSync(finalReport,
         JSON.stringify(allGames)
     )
+    fs.copyFileSync('./renderer/assets/not_found.jpg',
+        path.join(assetDir, `/not_found.jpg`))
     sendMsg(`Saved final database: ${finalReport}`, 'LOG')
     finalLogPath = path.join(saveDir, `/log.log`)
 
@@ -186,7 +191,7 @@ let date = new Date()
 let fetchCoverPromises = [];
 const saveInfo = (info, coverArt, address, coverUrl) => {
 
-    let gameEntry = new GameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverUrl)
+    let gameEntry = new GameObject(info.name, address, info.gameplayMain, info.gameplayMainExtra, info.gameplayCompletionist, coverUrl, info.id)
     allGames.push(gameEntry)
 
     if (fs.existsSync(address) && forceOverwrite == false) {
@@ -445,7 +450,7 @@ ipcMain.handle('endGameRequest', (event, ...args) => {
         console.log('incoming')
         let x
         if (isDev) {
-            x = require(path.join(process.env.HOME, '/HLTB_Fetcher/ok/database.json'))
+            x = require(path.join(process.env.HOME, '/HLTB_Fetcher/ok/assets/database.json'))
             if (allGames.length) x = allGames
         } else x = allGames
         finalReportWindow.webContents.send('ALL_GAMES', x)
