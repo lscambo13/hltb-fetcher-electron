@@ -1,13 +1,12 @@
-
 :root {
-  color-scheme: light;
-  background-color: hsl(0, 0%, 96%);
+  /* color-scheme: light;
+  background-color: hsl(0, 0%, 96%); */
   padding: 20px;
   box-sizing: border-box;
   cursor: default;
 }
 
-.mainContentContainer{
+.mainContentContainer {
   display: flex;
   gap: 24px;
   align-items: flex-start;
@@ -15,82 +14,83 @@
   flex-wrap: wrap;
 }
 
-.roundBorderBox{
+.roundBorderBox {
   border: 1px solid rgba(128, 128, 128, 0.25);
   border-radius: 16px;
 }
 
-.wideWidth{
+.wideWidth {
   min-width: 900px;
   max-width: 1366px;
 }
 
-.narrowWidth{
+.narrowWidth {
   min-width: 300px;
   max-width: 1366px;
 }
 
-.sidePanelContainer{
-    display: flex;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: space-evenly;
-    align-items: stretch;
+.sidePanelContainer {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: space-evenly;
+  align-items: stretch;
 }
 
-.sidePanelInnerBlock{
-    padding-inline: 8px;
-    padding-block-end: 8px;
+.sidePanelInnerBlock {
+  padding-inline: 8px;
+  padding-block-end: 8px;
   width: 380px;
-  border: 1px solid rgba(0, 0, 0, 0.086);
+  border: 1px solid rgba(113, 113, 113, 0.25);
   border-radius: 8px;
 
 }
 
-.sidePanelListItem{
-    display: flex;
-    /* width: 400px; */
-    justify-content: space-between;
-    background: transparent;
-    border-radius: 4px;
-    padding: 4px;
-    margin-block: 0.125em;
-    transition: 100ms;
-    opacity: 1;
+.sidePanelListItem {
+  display: flex;
+  /* width: 400px; */
+  justify-content: space-between;
+  background: transparent;
+  border-radius: 4px;
+  padding: 4px;
+  margin-block: 0.125em;
+  transition: 100ms;
+  opacity: 1;
 }
 
-.sidePanelListItem:hover{
-    background: rgba(211, 211, 211, 0.632);
-}
-.sidePanelListItem:active{
-    opacity: 0.5;;
+.sidePanelListItem:hover {
+  background: rgba(211, 211, 211, 0.632);
 }
 
-.bottomMargin{
+.sidePanelListItem:active {
+  opacity: 0.5;
+}
+
+.bottomMargin {
   margin-bottom: 40px;
 }
 
-.mainContentLabel{
-  background-color: hsl(0, 0%, 96%);
-    width: max-content;
-    margin: 0;
-    padding-inline: 12px;
-    margin-top: -16px;
-    padding-bottom: 0;
-    transform: translateY(0px) translateX(20px);
+.mainContentLabel {
+  /* background-color: hsl(0, 0%, 96%); */
+  width: max-content;
+  margin: 0;
+  padding-inline: 12px;
+  margin-top: -16px;
+  padding-bottom: 0;
+  transform: translateY(0px) translateX(20px);
 }
 
-p{
+p {
   padding: 0;
   margin: 0;
 }
 
-.canvasContainer{
+.canvasContainer {
   /* max-height: 500px; */
   /* width: 1920px; */
 }
 
-.cardGallery{
+.cardGallery {
   font-size: 20px;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -101,222 +101,231 @@ p{
   gap: 1em;
 }
 
-.cardContainer{
+.cardContainer {
   display: flex;
-    justify-content: space-between;
-    overflow: hidden;
-    background-color: hsl(40, 100%, 99%);
-    box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px;
-    border: 1px solid lightgrey;
-    border-radius: 6px;
-    transition: 150ms;
+  justify-content: space-between;
+  overflow: hidden;
+  /* background-color: hsl(40, 100%, 99%); */
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px;
+  /* border: 1px solid lightgrey; */
+  border-radius: 6px;
+  transition: 150ms;
 }
 
-.cardContainerGrid{
-    width: 19em;
+.cardContainerGrid {
+  width: 19em;
 }
-.cardContainerList{
-    width: 100%;
+
+.cardContainerList {
+  width: 100%;
 }
-.cardContainerBig{
-    display: flex;
-    justify-content: space-between;
-    overflow: hidden;
-    background-color: hsl(40, 100%, 99%);
-    box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px;
-    border: 1px solid lightgrey;
-    border-radius: 6px;
-    transition: 150ms;
-    padding: 0.5em;
-    width: 28em;
-    box-shadow: rgba(0, 0, 0, 0.4) 0 0 20px 20px;
-    border: 1px solid rgba(255, 166, 0, 0.75);
+
+.cardContainerBig {
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+  /* background-color: hsl(40, 100%, 99%); */
+  /* box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px; */
+  /* border: 1px solid lightgrey; */
+  border-radius: 6px;
+  transition: 150ms;
+  padding: 0.5em;
+  width: 28em;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 0 20px 20px;
+  border: 1px solid rgba(255, 166, 0, 0.75) !important;
 
 }
 
-.cardContainer:hover{
-    box-shadow: rgba(0, 0, 0, 0.2) 0 4px 6px 0px;
-    transform: translateY(-6px);
-    border: 1px solid rgba(255, 166, 0, 0.5);
+.cardContainer:hover {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 4px 6px 0px;
+  transform: translateY(-6px);
+  border: 1px solid rgba(255, 166, 0, 0.75);
 }
 
-.cardContainer:active{
-    box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px;
-    transform: translateY(0px);
+.cardContainer:active {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0px 0px 0px;
+  transform: translateY(0px);
 }
 
-.cardImage{
+.cardImage {
   margin: 0.25em;
   border-radius: 4px;
   box-sizing: border-box;
-    transition: 300ms;
+  transition: 300ms;
 }
 
-.cardImageGrid{
+.cardImageGrid {
   width: 6em;
 }
 
-.cardImageBig{
+.cardImageBig {
   width: 9em;
 }
 
-.cardImageList{
-    height: 4em;
-    width: 2.75em;
-    object-fit: cover;
+.cardImageList {
+  height: 4em;
+  width: 2.75em;
+  object-fit: cover;
 }
 
-.cardData{
-display: flex;
-    align-items: center;
-    padding-inline-end: 0.5em;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+.cardData {
+  display: flex;
+  align-items: center;
+  padding-inline-end: 0.5em;
+  justify-content: flex-end;
+  flex-wrap: wrap;
 }
 
-.cardDataGrid{
+.cardDataGrid {
   width: 12em;
   height: 8em;
 }
-.cardDataBig{
+
+.cardDataBig {
   width: 12em;
 }
-.cardDataList{
+
+.cardDataList {
   display: flex;
   width: 100%;
   align-items: center;
   justify-content: space-between;
 }
 
-.cardTitle{
-    display: flex;
-    justify-content: end;
-    height: 3em;
-    line-height: 1.5em;
-    overflow: hidden;
-    margin: 0.75em 0.25em 0.75em 0.375em;
-}
-
-.cardTitleGrid{
-    width: 11em;
-    text-align: end;
-}
-.cardTitleBig{
-    width: 11em;
-    text-align: end;
-}
-.cardTitleList{
-    align-items: center;
-    text-align: start;
-}
-
-
-.cardTimesContainer{
-display: inline-flex;
-    gap: 0.5em;
-    justify-content: space-around;
-    align-items: center;
-}
-
-
-.cardTimesContainer>div{
+.cardTitle {
   display: flex;
-    align-items: center;
-    flex-direction: column;
-    justify-content: center;
+  justify-content: end;
+  height: 3em;
+  line-height: 1.5em;
+  overflow: hidden;
+  margin: 0.75em 0.25em 0.75em 0.375em;
 }
-.cardTime{
+
+.cardTitleGrid {
+  width: 11em;
+  text-align: end;
+}
+
+.cardTitleBig {
+  width: 11em;
+  text-align: end;
+}
+
+.cardTitleList {
+  align-items: center;
+  text-align: start;
+}
+
+
+.cardTimesContainer {
+  display: inline-flex;
+  gap: 0.5em;
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+.cardTimesContainer>div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cardTime {
   display: flex;
   flex-direction: column;
-      align-items: center;
-    justify-content: center;
-    margin-bottom: 4px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
   font-weight: 500;
   border-radius: 50%;
-    overflow: hidden;
+  overflow: hidden;
   border: 2px solid rgba(255, 166, 0, 0.5);
   transition: 100ms;
 }
 
-.cardTime:hover{
+.cardTime:hover {
   border: 2px solid rgba(255, 166, 0, 0.875);
 }
 
-.problem{
+.problem {
   border: 2px solid rgba(255, 0, 0, 0.5);
 }
 
-.problem:hover{
+.problem:hover {
   border: 2px solid rgba(255, 0, 0, 0.875);
 }
 
-.cardTimeGrid{
+.cardTimeGrid {
   width: 3em;
   height: 3em;
 }
 
-.cardTimeBig{
+.cardTimeBig {
   width: 3em;
   height: 3em;
 }
 
-.cardTimeList{
+.cardTimeList {
   width: 2.5em;
   height: 2.5em;
 }
 
-.timeUnit{
+.timeUnit {
   font-size: 0.45em;
 }
 
-.timeUnitBig{
+.timeUnitBig {
   font-size: 0.5em;
   display: block;
 }
 
-.timeUnitGrid{
+.timeUnitGrid {
   display: block;
 }
 
-.timeUnitList{
+.timeUnitList {
   display: none;
 }
 
-.timeLabel{
-  font-size: 0.45em;;
+.timeLabel {
+  font-size: 0.45em;
+  ;
   font-weight: 600;
 }
-.timeFraction{
-    font-size: 0.5em;
+
+.timeFraction {
+  font-size: 0.5em;
 }
 
-.viewStyleButtonBar{
-display: flex;
-    gap: 0.25em;
-    padding-inline-end: 1em;
-    justify-content: flex-end;
+.viewStyleButtonBar {
+  display: flex;
+  gap: 0.25em;
+  padding-inline-end: 1em;
+  justify-content: flex-end;
 }
 
-button{
-    background-color: rgb(235, 235, 235);
-    border-color: rgb(211, 211, 211);
+/* button {
+  background-color: rgb(235, 235, 235);
+  border-color: rgb(211, 211, 211);
 }
 
-button:hover{
-    background-color: rgb(245, 245, 245);
-}
+button:hover {
+  background-color: rgb(245, 245, 245);
+} */
 
-h3{
+h3 {
   font-weight: 600;
   margin-block-end: 0.75em;
 }
 
-span{
-      text-align: end;
-font-weight: 400;
+span {
+  text-align: end;
+  font-weight: 400;
 }
 
-.modalContainer{
+.modalContainer {
   display: flex;
   position: fixed;
   width: 100vw;
@@ -324,11 +333,55 @@ font-weight: 400;
   background-color: transparent;
   z-index: 13;
   justify-content: center;
-    align-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.bigCardContainer{
+.bigCardContainer {
   font-size: 32px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .mainContentLabel {
+    background-color: #202020;
+  }
+
+  .sidePanelListItem:hover {
+    background: rgba(255, 255, 255, 0.1)
+  }
+
+  .cardContainer,
+  .cardContainerBig {
+    background-color: #141414;
+    border: 1px solid #2b2b2b;
+  }
+
+  .cardContainer:hover,
+  .cardContainerBig:hover {
+    background-color: #1b1b1b;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .mainContentLabel {
+    background-color: #f3f3f3;
+  }
+
+  .sidePanelListItem:hover {
+    background: rgba(196, 196, 196, 0.5)
+  }
+
+  .cardContainer,
+  .cardContainerBig {
+    background-color: #fbfbfb;
+    border: 1px solid #e4e4e4;
+  }
+
+  .cardContainer:hover,
+  .cardContainerBig:hover {
+    background-color: #f6f6f6;
+  }
+
+  /* background-color: #f6f6f6; */
 }

@@ -53,10 +53,7 @@ const createMainWindow = () => {
             contextIsolation: true,
             sandbox: true
         },
-        // transparent: true,
         resizable: true,
-        // backgroundMaterial: 'mica',
-        // backgroundColor: '#333333',
         autoHideMenuBar: true,
     })
 
