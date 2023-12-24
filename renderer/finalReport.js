@@ -133,23 +133,25 @@ const addGridStyle = () => {
 	})
 }
 
-fetch('./assets/database.json').then(res => {
-	if (res.status == 200) console.log('OK')
-	res.json().then(r => {
-		console.log('Found local database')
-		beginConstructingDOM(r)
+document.addEventListener('DOMContentLoaded', (event) => {
+	console.log('DOM fully loaded and parsed');
+	fetch('./assets/database.json').then(res => {
+		if (res.status == 200) console.log('OK')
+		res.json().then(r => {
+			console.log('Found local database')
+			beginConstructingDOM(r)
+		})
+	}).catch(e => {
+		console.log(e)
+		console.log('Did not find local database')
+		addMainListeners()
+		const restartAppButton = document.querySelector('#restartAppButton')
+		restartAppButton.addEventListener('click', () => {
+			bridgeApi.invoke('openRequest', 'restartApp')
+		})
+		bridgeApi.invoke('endGameRequest', 'requestAllGameData')
 	})
-}).catch(e => {
-	console.log(e)
-	console.log('Did not find local database')
-	addMainListeners()
-	const restartAppButton = document.querySelector('#restartAppButton')
-	restartAppButton.addEventListener('click', () => {
-		bridgeApi.invoke('openRequest', 'restartApp')
-	})
-	bridgeApi.invoke('endGameRequest', 'requestAllGameData')
-})
-
+});
 const generateSortedArrays = (unorderedArray, order) => {
 	let x;
 	if (order == 'asc') {
